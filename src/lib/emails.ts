@@ -163,7 +163,7 @@ export function orderTrackingUrl(locale: Locale, token: string | null): string |
 }
 
 /** Email the customer about their order (never throws). */
-export async function sendOrderEmail(orderId: string, kind: OrderEmailKind): Promise<void> {
+export async function sendOrderEmail(orderId: string, kind: OrderEmailKind, options: { resend?: boolean } = {}): Promise<void> {
   if (!emailConfigured()) return;
   try {
     const order = await loadOrder(orderId);
@@ -211,7 +211,7 @@ export async function sendOrderEmail(orderId: string, kind: OrderEmailKind): Pro
       html: layout(locale, inner),
       text,
       replyTo: store?.email || undefined,
-      idempotencyKey: `order-${orderId}-${kind}`,
+      idempotencyKey: options.resend ? undefined : `order-${orderId}-${kind}`,
     });
   } catch {
     console.error(`Order email (${kind}) could not be sent.`);

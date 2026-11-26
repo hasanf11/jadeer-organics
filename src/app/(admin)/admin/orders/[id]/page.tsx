@@ -14,9 +14,10 @@ import { createClient } from "@/lib/supabase/server";
 import { formatDateTime, money } from "@/lib/format";
 import { CUSTOMER_STEPS, PAYMENT_INFO, STATUS_INFO } from "@/lib/order-status";
 import { orderWhatsAppMessage, whatsAppHref } from "@/lib/order-whatsapp";
-import { siteUrl } from "@/lib/site";
+import { orderTrackingUrl } from "@/lib/emails";
 import { googleMapsUrl } from "@/lib/maps";
-import { setOrderPayment, setOrderStatus, saveOrderNotes } from "@/lib/admin-actions/orders";
+import { resendOrderEmail, setOrderPayment, setOrderStatus, saveOrderNotes } from "@/lib/admin-actions/orders";
+import CopyButton from "@/components/admin/copy-button";
 import ActionForm, { SubmitButton } from "@/components/admin/action-form";
 import { Panel, Pill } from "@/components/admin/ui";
 import StatusIcon from "@/components/status-icon";
@@ -55,14 +56,22 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
 
   const status = STATUS_INFO[order.status];
   const next = NEXT_STEP[order.status];
+  const locale = order.locale === "ar" ? "ar" : "en";
+  const trackingUrl = orderTrackingUrl(locale, order.tracking_token);
+  let zone = order.delivery_zone_name;
+  if (locale === "ar" && order.delivery_zone_id) {
+    const { data: z } = await supabase.from("delivery_zones").select("name_ar").eq("id", order.delivery_zone_id).maybeSingle();
+    if (z?.name_ar) zone = z.name_ar;
+  }
   const message = orderWhatsAppMessage({
     customerName: order.customer_name,
     customerPhone: order.customer_phone,
     orderNumber: order.order_number,
     status: order.status,
-    zone: order.delivery_zone_name,
+    zone,
     totalCents: order.total_cents,
-    siteUrl: siteUrl(),
+    locale,
+    trackingUrl,
   });
   const stepIndex = CUSTOMER_STEPS.indexOf(order.status);
 
@@ -82,6 +91,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
             <Pill color={PAYMENT_INFO[order.payment_status].color} bg={PAYMENT_INFO[order.payment_status].bg}>
               {PAYMENT_INFO[order.payment_status].label}
             </Pill>
+            <Pill color="#5a5f58" bg="#efe9dc">{locale === "ar" ? "Arabic site" : "English site"}</Pill>
             <Link href={`/admin/orders/${order.id}/print`} target="_blank" className="btn btn-soft btn-sm">
               <PiPrinterBold /> Print invoice
             </Link>
@@ -118,9 +128,23 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
               </a>
             </div>
             <details className="mt-4 rounded-2xl bg-cream p-3">
-              <summary className="cursor-pointer text-sm font-bold">Preview the message</summary>
-              <p className="mt-2 whitespace-pre-line text-sm text-ink-soft">{message}</p>
+              <summary className="cursor-pointer text-sm font-bold">Preview the message ({locale === "ar" ? "Arabic" : "English"})</summary>
+              <p className="mt-2 whitespace-pre-line text-sm text-ink-soft" dir={locale === "ar" ? "rtl" : "ltr"}>{message}</p>
             </details>
+            {trackingUrl && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                <span className="font-bold">Customer&apos;s private tracking link:</span>
+                <CopyButton value={trackingUrl} label="Copy link" />
+                <a href={trackingUrl} target="_blank" rel="noopener noreferrer" className="font-bold text-leaf underline">Open</a>
+              </div>
+            )}
+            {order.customer_email && order.status !== "pending" && (
+              <ActionForm action={resendOrderEmail} className="mt-3">
+                <input type="hidden" name="id" value={order.id} />
+                <input type="hidden" name="kind" value={order.status} />
+                <SubmitButton className="btn btn-soft btn-sm" pendingText="Sending…">Re-send “{status.label}” email</SubmitButton>
+              </ActionForm>
+            )}
             <details className="mt-3">
               <summary className="cursor-pointer text-sm font-bold text-ink-soft">Set another status</summary>
               <ActionForm action={setOrderStatus} className="mt-3 grid gap-2 sm:grid-cols-[1fr_1.4fr_auto]" confirm="Change this order's status?">

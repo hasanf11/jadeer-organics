@@ -10,6 +10,7 @@ import { dollarsInput } from "@/lib/format";
 type VariantRow = {
   id: string;
   label: string;
+  label_ar: string;
   sku: string | null;
   price_cents: number;
   compare_at_cents: number | null;
@@ -60,9 +61,10 @@ export default function VariantManager({ productId, variants }: { productId: str
               <input name="compare_at" defaultValue={dollarsInput(v.compare_at_cents)} className="input min-h-10 py-1.5" inputMode="decimal" placeholder="—" />
             </label>
             <label className="field">
-              <span className="field-label text-xs">SKU</span>
-              <input name="sku" defaultValue={v.sku ?? ""} className="input min-h-10 py-1.5" maxLength={60} placeholder="—" />
+              <span className="field-label text-xs">Size (Arabic)</span>
+              <input name="label_ar" defaultValue={v.label_ar} className="input min-h-10 py-1.5 text-right" dir="rtl" maxLength={40} placeholder="auto" />
             </label>
+            <input type="hidden" name="sku" value={v.sku ?? ""} />
             <label className="flex items-center gap-2 pb-2.5 text-sm font-semibold">
               <input type="checkbox" name="is_active" defaultChecked={v.is_active} className="size-5 accent-[var(--color-leaf)]" />
               <input type="hidden" name="is_active" value="false" />

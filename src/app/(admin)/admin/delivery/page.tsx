@@ -10,22 +10,24 @@ import { PageHeader } from "@/components/admin/ui";
 export const metadata: Metadata = { title: "Delivery areas" };
 export const instant = false;
 
-type Zone = { id: string; name: string; fee_cents: number; eta: string; is_active: boolean; sort_order: number };
+type Zone = { id: string; name: string; name_ar: string; fee_cents: number; eta: string; eta_ar: string; is_active: boolean; sort_order: number };
 
 function ZoneFields({ z }: { z?: Zone }) {
   return (
     <>
       {z && <input type="hidden" name="id" value={z.id} />}
       <label className="field"><span className="field-label">Area</span><input name="name" defaultValue={z?.name} className="input" required maxLength={80} /></label>
+      <label className="field"><span className="field-label">Area (Arabic)</span><input name="name_ar" defaultValue={z?.name_ar} className="input text-right" dir="rtl" maxLength={80} /></label>
       <label className="field"><span className="field-label">Fee $</span><input name="fee" defaultValue={z ? dollarsInput(z.fee_cents) : ""} className="input" inputMode="decimal" required placeholder="3" /></label>
       <label className="field"><span className="field-label">Delivery time</span><input name="eta" defaultValue={z?.eta} className="input" maxLength={60} placeholder="Same day" /></label>
+      <label className="field"><span className="field-label">Time (Arabic)</span><input name="eta_ar" defaultValue={z?.eta_ar} className="input text-right" dir="rtl" maxLength={60} /></label>
       <label className="field"><span className="field-label">Order</span><input type="number" name="sort_order" min={0} defaultValue={z?.sort_order ?? 0} className="input" /></label>
       <label className="flex items-center gap-2 pb-3 font-semibold"><input type="checkbox" name="is_active" defaultChecked={z?.is_active ?? true} className="size-5 accent-[var(--color-leaf)]" /> Active</label>
     </>
   );
 }
 
-const grid = "grid grid-cols-2 gap-3 md:grid-cols-[2fr_1fr_1.3fr_0.8fr_auto_auto] md:items-end";
+const grid = "grid grid-cols-2 gap-3 md:grid-cols-[1.6fr_1.4fr_0.8fr_1.1fr_1.1fr_0.7fr_auto_auto] md:items-end";
 
 export default async function DeliveryPage() {
   await requireAdmin();

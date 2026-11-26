@@ -42,11 +42,13 @@ export default async function SettingsPage() {
             <label className="field"><span className="field-label">“Low stock” at</span><input type="number" min={0} name="low_stock_threshold" defaultValue={s.low_stock_threshold} className="input" /></label>
           </div>
           <label className="field"><span className="field-label">Note shown at checkout</span><input name="order_notice" defaultValue={s.order_notice} className="input" maxLength={300} /></label>
+          <label className="field"><span className="field-label">Note shown at checkout (Arabic)</span><input name="order_notice_ar" defaultValue={s.order_notice_ar} className="input text-right" dir="rtl" maxLength={300} /></label>
         </Section>
 
         <Section title="Announcement bar" text="The green scrolling bar at the top of every page.">
           <label className="flex items-center gap-2 font-semibold"><input type="checkbox" name="announcement_enabled" defaultChecked={s.announcement_enabled} className="size-5 accent-[var(--color-leaf)]" /> Show the announcement bar</label>
-          <label className="field"><span className="field-label">Text</span><input name="announcement_text" defaultValue={s.announcement_text} className="input" maxLength={200} /></label>
+          <label className="field"><span className="field-label">Text (English)</span><input name="announcement_text" defaultValue={s.announcement_text} className="input" maxLength={200} /></label>
+          <label className="field"><span className="field-label">Text (Arabic)</span><input name="announcement_text_ar" defaultValue={s.announcement_text_ar} className="input text-right" dir="rtl" maxLength={200} /></label>
         </Section>
 
         <Section title="Contact" text="The WhatsApp number shows a chat button on every page.">

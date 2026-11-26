@@ -8,24 +8,33 @@ Supabase (Postgres, Auth, Storage), GSAP + Lenis and React Bits–style effects.
 
 ## What's inside
 
+**Two separate languages**: English at `/` and Arabic (right-to-left) at `/ar`, each
+with its own fonts (DM Serif Display + Plus Jakarta Sans / El Messiri + Almarai), texts,
+product content, emails and WhatsApp messages. A switch in the header/menu moves between
+the same page in both languages; search engines get `hreflang` links for both.
+
 **Shop**
-- Home page with her Instagram imagery, rotating headline, category "story" circles,
-  bestsellers, keto & gift banners, Instagram feed, shops with Google Maps, partners
+- Home page with an animated aurora hero, swapping product cards, colourful category
+  tiles, bestsellers, keto & gift banners, recipes, Instagram feed, shops, partners
 - Shop with instant search and filters (category, keto, vegan, sugar-free…, in stock, sort)
 - Category pages, product pages (sizes, quantity, buy now, share, reviews, "notify me
   when back in stock", sticky add-to-bag bar on phones), wishlist, bag drawer with
   free-delivery meter and "goes well with"
 - One-page cash-on-delivery checkout (delivery areas & fees, promo codes, saved details)
-- Private order tracking link + "Track my order" with order number and phone
-- Our stores (tap to open the Google Maps app), Our story, Contact, FAQ, Delivery,
-  Privacy, Terms, friendly 404
-- Phone tab bar (Home · Shop · Search · Saved · Bag), floating WhatsApp button
+- Private order tracking link + "Track my order" with order number and phone, and
+  "My orders" (orders placed on this device, no account needed)
+- Order emails (confirmation and every status change, in the customer's language) and
+  a notification email to the shop for each new order and contact message
+- Our stores (tap to open the Google Maps app), Offers, Journal (recipes), Wholesale,
+  Our story, Contact, FAQ, Delivery, Privacy, Terms, friendly 404
+- Phone tab bar (Home · Shop · Search · Saved · Bag), full-screen menu, floating WhatsApp button
 
 **Admin** (`/admin`)
 - Dashboard: sales chart, best sellers, orders by area, items to handle, low stock
 - Orders: status flow (New → Confirmed → Preparing → Out for delivery → Delivered),
-  one-tap WhatsApp messages for each status, payment, private notes, history,
-  printable invoice, Excel export
+  one-tap WhatsApp messages for each status (in the customer's language, with their
+  tracking link), payment, private notes, history, printable invoice, resend email,
+  bulk status changes, printable delivery slips (selected or by status), Excel export
 - Products: details, Arabic names, labels, sizes & prices (sale prices), stock,
   photo upload (auto-optimised), illustration designer, duplicate, publish/draft
 - Inventory (receive stock, corrections, movement history), categories, promo codes
@@ -46,11 +55,20 @@ Breadcrumbs, FAQ), sitemap with images, robots.txt, web app manifest.
 
 1. **Supabase**: create a project, then in the SQL editor run, in order:
    - `supabase/migrations/20261126000001_schema.sql`
+   - `supabase/migrations/20261127000002_arabic_and_order_links.sql`
    - `supabase/seed.sql` (categories, 35 products, shops, delivery areas, partners, `WELCOME10`)
+   - `supabase/seed-arabic.sql` (Arabic texts for all of the above)
+
+   All four are safe to run again.
 2. **Environment**: copy `.env.example` to `.env.local` and fill in the keys from
    Supabase → Project Settings → API keys. On Vercel, add the same variables under
    Settings → Environment Variables. Set `SITE_URL` to the real domain once it's ready
    (search engines are told not to index the site until then).
+
+   **Emails** (optional but recommended): create a free [Resend](https://resend.com)
+   account, verify the shop's domain and set `RESEND_API_KEY`, `ORDER_EMAIL_FROM`
+   (e.g. `Ja'deer Organics <orders@jadeerorganics.com>`) and `SHOP_NOTIFY_EMAIL` (where
+   new-order and message alerts go). Without them the shop works normally, just without emails.
 3. **Install & run**
    ```bash
    npm install
@@ -80,5 +98,5 @@ product form.
 
 ```bash
 npx supabase start
-npx supabase db reset   # applies the migration and seed.sql
+npx supabase db reset   # applies the migrations, seed.sql and seed-arabic.sql
 ```

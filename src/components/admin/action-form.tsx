@@ -38,6 +38,7 @@ export default function ActionForm({
   resetOnSuccess = false,
   confirm,
   onSuccess,
+  id,
 }: {
   action: Action;
   children: ReactNode;
@@ -45,6 +46,7 @@ export default function ActionForm({
   resetOnSuccess?: boolean;
   confirm?: string;
   onSuccess?: () => void;
+  id?: string;
 }) {
   const [state, formAction] = useActionState(action, { ok: false, message: "" });
   const formRef = useRef<HTMLFormElement>(null);
@@ -68,6 +70,7 @@ export default function ActionForm({
   return (
     <form
       ref={formRef}
+      id={id}
       action={formAction}
       className={className}
       onSubmit={(event) => {

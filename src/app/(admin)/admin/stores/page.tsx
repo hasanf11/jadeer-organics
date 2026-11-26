@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/admin/ui";
 export const metadata: Metadata = { title: "Stores & maps" };
 export const instant = false;
 
-type Store = { id: string; name: string; name_ar: string; area: string; address: string; phone: string; hours: string; latitude: number | null; longitude: number | null; maps_query: string; is_active: boolean; sort_order: number };
+type Store = { id: string; name: string; name_ar: string; area: string; area_ar: string; address: string; address_ar: string; phone: string; hours: string; hours_ar: string; latitude: number | null; longitude: number | null; maps_query: string; is_active: boolean; sort_order: number };
 
 function StoreFields({ s }: { s?: Store }) {
   return (
@@ -21,10 +21,15 @@ function StoreFields({ s }: { s?: Store }) {
         <label className="field"><span className="field-label">Store name</span><input name="name" defaultValue={s?.name} className="input" required maxLength={80} /></label>
         <label className="field"><span className="field-label">Arabic name</span><input name="name_ar" defaultValue={s?.name_ar} className="input text-right" dir="rtl" maxLength={80} /></label>
         <label className="field"><span className="field-label">Area (short)</span><input name="area" defaultValue={s?.area} className="input" maxLength={80} placeholder="Haret Hreik, Beirut" /></label>
+        <label className="field"><span className="field-label">Area (Arabic)</span><input name="area_ar" defaultValue={s?.area_ar} className="input text-right" dir="rtl" maxLength={80} /></label>
         <label className="field"><span className="field-label">Phone</span><input name="phone" defaultValue={s?.phone} className="input" maxLength={40} /></label>
       </div>
-      <label className="field"><span className="field-label">Address</span><input name="address" defaultValue={s?.address} className="input" maxLength={300} /></label>
-      <label className="field"><span className="field-label">Opening hours</span><input name="hours" defaultValue={s?.hours} className="input" maxLength={200} placeholder="Mon–Sat 9 AM – 9 PM" /></label>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="field"><span className="field-label">Address</span><input name="address" defaultValue={s?.address} className="input" maxLength={300} /></label>
+        <label className="field"><span className="field-label">Address (Arabic)</span><input name="address_ar" defaultValue={s?.address_ar} className="input text-right" dir="rtl" maxLength={300} /></label>
+        <label className="field"><span className="field-label">Opening hours</span><input name="hours" defaultValue={s?.hours} className="input" maxLength={200} placeholder="Mon–Sat 9 AM – 9 PM" /></label>
+        <label className="field"><span className="field-label">Opening hours (Arabic)</span><input name="hours_ar" defaultValue={s?.hours_ar} className="input text-right" dir="rtl" maxLength={200} /></label>
+      </div>
       <fieldset className="grid gap-3 rounded-2xl bg-cream p-3">
         <legend className="px-1 text-sm font-bold"> Map location</legend>
         <label className="field"><span className="field-label">Paste a Google Maps link or “lat, lng” (easiest)</span><input name="maps_link" className="input" maxLength={500} placeholder="https://maps.google.com/?q=33.8564,35.5066" /></label>

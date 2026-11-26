@@ -13,9 +13,13 @@ export type ProductFormValues = {
   slug: string;
   category_id: string | null;
   tagline: string;
+  tagline_ar: string;
   description: string;
+  description_ar: string;
   ingredients: string;
+  ingredients_ar: string;
   how_to_use: string;
+  how_to_use_ar: string;
   badges: string[];
   art_shape: ArtShape;
   art_color: string;
@@ -111,24 +115,41 @@ export default function ProductForm({
               </select>
             </div>
             <div className="field">
-              <label htmlFor="p-tagline">Short tagline</label>
+              <label htmlFor="p-tagline">Short tagline (English)</label>
               <input id="p-tagline" name="tagline" className="input" maxLength={200} defaultValue={values.tagline} placeholder="e.g. Cold-pressed from Lebanese groves." />
             </div>
           </div>
           <div className="field">
-            <label htmlFor="p-description">Description</label>
-            <textarea id="p-description" name="description" className="input min-h-36" maxLength={10000} defaultValue={values.description} />
+            <label htmlFor="p-tagline-ar">Short tagline (Arabic)</label>
+            <input id="p-tagline-ar" name="tagline_ar" className="input text-right" dir="rtl" lang="ar" maxLength={200} defaultValue={values.tagline_ar} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <div className="field">
-              <label htmlFor="p-ingredients">Ingredients</label>
+              <label htmlFor="p-description">Description (English)</label>
+              <textarea id="p-description" name="description" className="input min-h-36" maxLength={10000} defaultValue={values.description} />
+            </div>
+            <div className="field">
+              <label htmlFor="p-description-ar">Description (Arabic)</label>
+              <textarea id="p-description-ar" name="description_ar" className="input min-h-36 text-right" dir="rtl" lang="ar" maxLength={10000} defaultValue={values.description_ar} />
+            </div>
+            <div className="field">
+              <label htmlFor="p-ingredients">Ingredients (English)</label>
               <textarea id="p-ingredients" name="ingredients" className="input" maxLength={3000} defaultValue={values.ingredients} />
             </div>
             <div className="field">
-              <label htmlFor="p-how">How to use / storage</label>
+              <label htmlFor="p-ingredients-ar">Ingredients (Arabic)</label>
+              <textarea id="p-ingredients-ar" name="ingredients_ar" className="input text-right" dir="rtl" lang="ar" maxLength={3000} defaultValue={values.ingredients_ar} />
+            </div>
+            <div className="field">
+              <label htmlFor="p-how">How to use / storage (English)</label>
               <textarea id="p-how" name="how_to_use" className="input" maxLength={3000} defaultValue={values.how_to_use} />
             </div>
+            <div className="field">
+              <label htmlFor="p-how-ar">How to use / storage (Arabic)</label>
+              <textarea id="p-how-ar" name="how_to_use_ar" className="input text-right" dir="rtl" lang="ar" maxLength={3000} defaultValue={values.how_to_use_ar} />
+            </div>
           </div>
+          <p className="field-hint">The Arabic site shows the Arabic text; empty Arabic fields fall back to English.</p>
         </section>
 
         <section className="rounded-3xl border border-line bg-white p-5 md:p-6">

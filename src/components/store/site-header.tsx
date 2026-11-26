@@ -10,6 +10,7 @@ import {
   PiCaretDownBold,
   PiHeartBold,
   PiHouseBold,
+  PiPlantBold,
   PiListBold,
   PiMagnifyingGlassBold,
   PiShoppingBagOpenBold,
@@ -105,7 +106,7 @@ function HeaderView({ categories, pathname }: { categories: NavCategory[]; pathn
     { path: "/offers", label: t.nav.offers, icon: PiTagBold },
     { path: "/stores", label: t.nav.stores, icon: PiStorefrontBold },
     { path: "/journal", label: t.nav.journal, icon: PiBookOpenTextBold },
-    { path: "/about", label: t.nav.story, icon: PiLeafBold },
+    { path: "/about", label: t.nav.story, icon: PiPlantBold },
     { path: "/orders", label: t.nav.myOrders, icon: PiReceiptBold },
     { path: "/track", label: t.nav.track, icon: PiPackageBold },
     { path: "/wishlist", label: t.common.wishlist, icon: PiHeartBold },
@@ -221,26 +222,7 @@ function HeaderView({ categories, pathname }: { categories: NavCategory[]; pathn
           </button>
         </div>
         <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-32 pt-4" data-lenis-prevent>
-          <p className="eyebrow mb-3">{t.nav.categories}</p>
-          <div className="grid grid-cols-2 gap-2.5">
-            {categories.map((category) => {
-              const src = imageUrl(category.image);
-              return (
-                <Link
-                  key={category.slug}
-                  href={href(`/category/${category.slug}`)}
-                  onClick={() => setMenuOpen(false)}
-                  className="relative flex aspect-[5/4] items-end overflow-hidden rounded-2xl p-3"
-                  style={{ background: category.color }}
-                >
-                  {src && <Image src={src} alt="" fill sizes="50vw" className="object-cover opacity-80" />}
-                  <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                  <span className="relative text-[0.95rem] font-bold leading-tight text-white">{category.name}</span>
-                </Link>
-              );
-            })}
-          </div>
-          <nav aria-label={t.common.menu} className="mt-6 grid">
+          <nav aria-label={t.common.menu} className="grid">
             {menuLinks.map(({ path, label, icon: Icon }) => (
               <Link
                 key={path}
@@ -257,6 +239,25 @@ function HeaderView({ categories, pathname }: { categories: NavCategory[]; pathn
               </Link>
             ))}
           </nav>
+          <p className="eyebrow mb-3 mt-7">{t.nav.categories}</p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {categories.map((category) => {
+              const src = imageUrl(category.image);
+              return (
+                <Link
+                  key={category.slug}
+                  href={href(`/category/${category.slug}`)}
+                  onClick={() => setMenuOpen(false)}
+                  className="relative flex aspect-[16/10] items-end overflow-hidden rounded-2xl p-3"
+                  style={{ background: category.color }}
+                >
+                  {src && <Image src={src} alt="" fill sizes="50vw" className="object-cover opacity-80" />}
+                  <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <span className="relative text-[0.95rem] font-bold leading-tight text-white">{category.name}</span>
+                </Link>
+              );
+            })}
+          </div>
           <LanguageSwitch className="btn btn-soft mt-6 w-full" />
         </div>
       </div>

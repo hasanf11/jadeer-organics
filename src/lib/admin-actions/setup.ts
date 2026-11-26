@@ -43,6 +43,7 @@ export async function saveCategory(_prev: ActionState, formData: FormData): Prom
     name_ar: text(formData, "name_ar", 80),
     slug: slugify(text(formData, "slug", 90) || name),
     description: text(formData, "description", 1000),
+    description_ar: text(formData, "description_ar", 1000),
     color: HEX.test(color) ? color : "#2f8f3a",
         is_active: checkbox(formData, "is_active"),
     sort_order: Math.max(0, int(formData, "sort_order")),
@@ -90,9 +91,12 @@ export async function saveStore(_prev: ActionState, formData: FormData): Promise
     name,
     name_ar: text(formData, "name_ar", 80),
     area: text(formData, "area", 80),
+    area_ar: text(formData, "area_ar", 80),
     address: text(formData, "address", 300),
+    address_ar: text(formData, "address_ar", 300),
     phone: text(formData, "phone", 40),
     hours: text(formData, "hours", 200),
+    hours_ar: text(formData, "hours_ar", 200),
     latitude,
     longitude,
     maps_query: text(formData, "maps_query", 200),
@@ -114,8 +118,10 @@ export async function saveZone(_prev: ActionState, formData: FormData): Promise<
   if (fee == null) return failure("Please enter a fee, e.g. 3 or 0 for free.");
   return save("delivery_zones", "/admin/delivery", formData, {
     name,
+    name_ar: text(formData, "name_ar", 80),
     fee_cents: fee,
     eta: text(formData, "eta", 60),
+    eta_ar: text(formData, "eta_ar", 60),
     is_active: checkbox(formData, "is_active"),
     sort_order: Math.max(0, int(formData, "sort_order")),
   }, "delivery area");
@@ -215,11 +221,13 @@ export async function saveSettings(_prev: ActionState, formData: FormData): Prom
       tiktok_url: text(formData, "tiktok_url", 300),
       announcement_enabled: checkbox(formData, "announcement_enabled"),
       announcement_text: text(formData, "announcement_text", 200),
+      announcement_text_ar: text(formData, "announcement_text_ar", 200),
       free_delivery_threshold_cents: threshold,
       min_order_cents: minimum,
       low_stock_threshold: Math.min(1000, Math.max(0, int(formData, "low_stock_threshold", 5))),
       accepting_orders: checkbox(formData, "accepting_orders"),
       order_notice: text(formData, "order_notice", 300),
+      order_notice_ar: text(formData, "order_notice_ar", 300),
     })
     .eq("id", 1);
   if (error) return failure(dbMessage(error, "Could not save settings."));

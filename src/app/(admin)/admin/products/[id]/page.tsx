@@ -24,7 +24,7 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
   const [{ data: product }, { data: categories }] = await Promise.all([
     supabase
       .from("products")
-      .select("*, product_variants(id, label, sku, price_cents, compare_at_cents, stock_quantity, is_active, sort_order), product_images(id, path, alt, sort_order)")
+      .select("*, product_variants(id, label, label_ar, sku, price_cents, compare_at_cents, stock_quantity, is_active, sort_order), product_images(id, path, alt, sort_order)")
       .eq("id", id)
       .maybeSingle(),
     supabase.from("categories").select("id, name, emoji").order("sort_order"),
@@ -74,9 +74,13 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
           slug: product.slug,
           category_id: product.category_id,
           tagline: product.tagline,
+          tagline_ar: product.tagline_ar,
           description: product.description,
+          description_ar: product.description_ar,
           ingredients: product.ingredients,
+          ingredients_ar: product.ingredients_ar,
           how_to_use: product.how_to_use,
+          how_to_use_ar: product.how_to_use_ar,
           badges: product.badges,
           art_shape: product.art_shape as ArtShape,
           art_color: product.art_color,

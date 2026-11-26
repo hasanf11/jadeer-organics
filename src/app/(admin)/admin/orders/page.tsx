@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PiDownloadSimpleBold, PiMagnifyingGlassBold, PiWhatsappLogoBold } from "react-icons/pi";
+import { PiDownloadSimpleBold, PiMagnifyingGlassBold, PiPrinterBold, PiWhatsappLogoBold } from "react-icons/pi";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateTime, money } from "@/lib/format";
 import { ORDER_STATUSES, PAYMENT_INFO, STATUS_INFO } from "@/lib/order-status";
 import { Empty, PageHeader, Pill, Table } from "@/components/admin/ui";
+import BulkOrdersBar from "@/components/admin/bulk-orders-bar";
 
 export const metadata: Metadata = { title: "Orders" };
 export const instant = false;
@@ -22,7 +23,7 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
   const supabase = await createClient();
   let query = supabase
     .from("orders")
-    .select("id, order_number, customer_name, customer_phone, delivery_zone_name, total_cents, status, payment_status, created_at, order_items(quantity)", { count: "exact" })
+    .select("id, order_number, customer_name, customer_phone, delivery_zone_name, total_cents, status, payment_status, locale, created_at, order_items(quantity)", { count: "exact" })
     .order("created_at", { ascending: false })
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
@@ -55,9 +56,14 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
         title="Orders"
         description="Confirm new orders, follow them to the door and message customers on WhatsApp in one tap."
         actions={
-          <a href={`/admin/orders/export${status ? `?status=${status}` : ""}`} className="btn btn-soft btn-sm">
+          <>
+          <a href={`/admin/orders/print-slips?status=${status || "confirmed"}`} target="_blank" rel="noopener" className="btn btn-soft btn-sm">
+            <PiPrinterBold /> Print {status ? STATUS_INFO[status].label.toLowerCase() : "confirmed"} slips
+          </a>
+          <a href={`/admin/orders/export${status ? `?status=${status}` : ""}`} download className="btn btn-soft btn-sm">
             <PiDownloadSimpleBold /> Export to Excel
           </a>
+          </>
         }
       />
 
@@ -88,11 +94,13 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
         <Empty title={q || status ? "No orders match" : "No orders yet"} text={q || status ? "Try another search or status." : "New orders will appear here instantly."} />
       ) : (
         <>
+          <BulkOrdersBar />
           {/* Phones: cards */}
           <ul className="grid gap-3 md:hidden">
             {orders.map((o) => (
-              <li key={o.id}>
-                <Link href={`/admin/orders/${o.id}`} className="block rounded-2xl border border-line bg-white p-4">
+              <li key={o.id} className="relative">
+                <input type="checkbox" form="bulk-orders" name="ids" value={o.id} className="absolute end-3 top-3 z-10 size-6 accent-[var(--color-leaf)]" aria-label={`Select order ${o.order_number}`} />
+                <Link href={`/admin/orders/${o.id}`} className="block rounded-2xl border border-line bg-white p-4 pe-12">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-bold">#{o.order_number} · {o.customer_name}</span>
                     <span className="font-bold">{money(o.total_cents)}</span>
@@ -110,13 +118,15 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
           <div className="hidden md:block">
             <Table>
               <thead>
-                <tr><th>Order</th><th>Customer</th><th>Area</th><th>Items</th><th>Total</th><th>Status</th><th>Payment</th><th><span className="sr-only">WhatsApp</span></th></tr>
+                <tr><th><span className="sr-only">Select</span></th><th>Order</th><th>Customer</th><th>Area</th><th>Items</th><th>Total</th><th>Status</th><th>Payment</th><th><span className="sr-only">WhatsApp</span></th></tr>
               </thead>
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id}>
+                    <td><input type="checkbox" form="bulk-orders" name="ids" value={o.id} className="size-5 accent-[var(--color-leaf)]" aria-label={`Select order ${o.order_number}`} /></td>
                     <td>
                       <Link href={`/admin/orders/${o.id}`} className="font-bold text-leaf hover:underline">#{o.order_number}</Link>
+                      {o.locale === "ar" && <span className="ms-1 rounded bg-sand px-1 text-[0.65rem] font-bold">AR</span>}
                       <span className="block text-xs text-ink-soft">{formatDateTime(o.created_at)}</span>
                     </td>
                     <td>

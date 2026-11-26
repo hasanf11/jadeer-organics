@@ -24,7 +24,7 @@ export default async function NewProductPage() {
         action={createProduct}
         categories={categories ?? []}
         values={{
-          name: "", name_ar: "", slug: "", category_id: null, tagline: "", description: "", ingredients: "", how_to_use: "",
+          name: "", name_ar: "", slug: "", category_id: null, tagline: "", tagline_ar: "", description: "", description_ar: "", ingredients: "", ingredients_ar: "", how_to_use: "", how_to_use_ar: "",
           badges: ["organic", "preservative-free"], art_shape: "bottle", art_color: "#2f8f3a", art_background: "#e3f4d8",
           is_featured: false, status: "published", sort_order: 100,
         }}

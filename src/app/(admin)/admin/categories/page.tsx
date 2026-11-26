@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/admin/ui";
 export const metadata: Metadata = { title: "Categories" };
 export const instant = false;
 
-type Category = { id: string; name: string; name_ar: string; slug: string; description: string; color: string; emoji: string; is_active: boolean; sort_order: number };
+type Category = { id: string; name: string; name_ar: string; slug: string; description: string; description_ar: string; color: string; emoji: string; is_active: boolean; sort_order: number };
 
 function CategoryFields({ c }: { c?: Category }) {
   return (
@@ -19,7 +19,10 @@ function CategoryFields({ c }: { c?: Category }) {
         <label className="field"><span className="field-label">Name</span><input name="name" defaultValue={c?.name} className="input" required maxLength={80} /></label>
         <label className="field"><span className="field-label">Arabic name</span><input name="name_ar" defaultValue={c?.name_ar} className="input text-right" dir="rtl" maxLength={80} /></label>
       </div>
-      <label className="field"><span className="field-label">Description</span><textarea name="description" defaultValue={c?.description} className="input min-h-20" maxLength={1000} /></label>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="field"><span className="field-label">Description (English)</span><textarea name="description" defaultValue={c?.description} className="input min-h-20" maxLength={1000} /></label>
+        <label className="field"><span className="field-label">Description (Arabic)</span><textarea name="description_ar" defaultValue={c?.description_ar} className="input min-h-20 text-right" dir="rtl" maxLength={1000} /></label>
+      </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:items-end">
         <label className="field"><span className="field-label">Web address</span><input name="slug" defaultValue={c?.slug} className="input" maxLength={90} placeholder="auto" /></label>
         <label className="field"><span className="field-label">Colour</span><input type="color" name="color" defaultValue={c?.color ?? "#2f8f3a"} className="h-12 w-full rounded-xl border-2 border-line" /></label>
