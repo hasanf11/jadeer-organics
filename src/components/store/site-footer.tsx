@@ -1,17 +1,21 @@
 import Link from "next/link";
 import { cacheLife } from "next/cache";
 import {
-  PiFacebookLogo,
-  PiHandCoins,
-  PiInstagramLogo,
-  PiLeaf,
-  PiMapPin,
-  PiTiktokLogo,
-  PiTruck,
-  PiWhatsappLogo,
+  PiEnvelopeSimpleBold,
+  PiFacebookLogoBold,
+  PiHandCoinsBold,
+  PiInstagramLogoBold,
+  PiMapPinFill,
+  PiPhoneBold,
+  PiSealCheckBold,
+  PiTiktokLogoBold,
+  PiTruckBold,
+  PiWhatsappLogoBold,
 } from "react-icons/pi";
 import Logo from "@/components/logo";
 import NewsletterForm from "@/components/store/newsletter-form";
+import { dictionary } from "@/lib/i18n";
+import { localePath, type Locale } from "@/lib/i18n/config";
 import type { Category, StoreLocation, StoreSettings } from "@/lib/catalog";
 import { googleMapsUrl } from "@/lib/maps";
 
@@ -19,112 +23,125 @@ export default async function SiteFooter({
   settings,
   categories,
   locations,
+  locale,
 }: {
   settings: StoreSettings;
   categories: Category[];
   locations: StoreLocation[];
+  locale: Locale;
 }) {
   "use cache";
   cacheLife("days");
 
+  const t = dictionary(locale);
+  const href = (path: string) => localePath(locale, path);
   const whatsapp = settings.whatsapp.replace(/\D/g, "");
   const socials = [
-    { href: settings.instagram_url, label: "Instagram", icon: PiInstagramLogo },
-    { href: settings.facebook_url, label: "Facebook", icon: PiFacebookLogo },
-    { href: settings.tiktok_url, label: "TikTok", icon: PiTiktokLogo },
-    { href: whatsapp ? `https://wa.me/${whatsapp}` : "", label: "WhatsApp", icon: PiWhatsappLogo },
+    { href: settings.instagram_url, label: t.common.instagram, icon: PiInstagramLogoBold },
+    { href: settings.facebook_url, label: "Facebook", icon: PiFacebookLogoBold },
+    { href: settings.tiktok_url, label: "TikTok", icon: PiTiktokLogoBold },
+    { href: whatsapp ? `https://wa.me/${whatsapp}` : "", label: t.common.whatsapp, icon: PiWhatsappLogoBold },
+    { href: settings.email ? `mailto:${settings.email}` : "", label: t.common.email, icon: PiEnvelopeSimpleBold },
   ].filter((s) => s.href);
+  const trustIcons = [PiSealCheckBold, PiTruckBold, PiHandCoinsBold];
 
-  const heading = "mb-4 text-[0.7rem] font-bold uppercase tracking-[0.22em] text-cream/50";
-  const link = "text-cream/80 transition-colors hover:text-white";
+  const heading = "mb-4 text-[0.72rem] font-extrabold text-sun en:uppercase en:tracking-[0.2em] ar:text-sm";
+  const link = "text-cream/75 transition-colors hover:text-white";
 
   return (
-    <footer className="grain mt-28 bg-[#1d2a1f] text-cream">
+    <footer className="grain mt-24 bg-forest text-cream">
       <div className="border-b border-white/10">
-        <div className="container-x grid gap-6 py-8 sm:grid-cols-3">
-          {[
-            { icon: PiLeaf, title: "Certified organic", text: "No preservatives, no pesticides" },
-            { icon: PiTruck, title: "Delivery across Lebanon", text: "Same day in Beirut" },
-            { icon: PiHandCoins, title: "Cash on delivery", text: "Pay when your order arrives" },
-          ].map(({ icon: Icon, title, text }) => (
-            <div key={title} className="flex items-center gap-4">
-              <Icon size={28} className="shrink-0 text-sun" aria-hidden="true" />
-              <span>
-                <span className="block font-semibold">{title}</span>
-                <span className="text-sm text-cream/60">{text}</span>
-              </span>
-            </div>
-          ))}
+        <div className="container-x grid gap-5 py-8 sm:grid-cols-3">
+          {t.footer.trust.map(({ title, text }, i) => {
+            const Icon = trustIcons[i];
+            return (
+              <div key={title} className="flex items-center gap-4">
+                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sun text-forest">
+                  <Icon size={23} aria-hidden="true" />
+                </span>
+                <span>
+                  <span className="block font-bold">{title}</span>
+                  <span className="text-sm text-cream/60">{text}</span>
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="container-x grid gap-14 py-16 lg:grid-cols-[1.1fr_2fr]">
+      <div className="container-x grid gap-12 py-14 lg:grid-cols-[1.15fr_2fr] lg:gap-16 [&>*]:min-w-0">
         <div>
-          <Logo light />
-          <p className="mt-6 max-w-sm font-display text-2xl leading-snug text-cream/90">
-            You deserve this way of life. Your health is our mission.
-          </p>
-          <p className="arabic mt-2 text-lg text-cream/60" dir="rtl" lang="ar">
-            أنت جدير بهذا النمط من الحياة
-          </p>
-
-          <div className="mt-10 max-w-md">
-            <p className="font-semibold">Join our mailing list</p>
-            <p className="mb-3 text-sm text-cream/60">New arrivals, seasonal recipes and private offers.</p>
+          <Logo light locale={locale} />
+          <p className="mt-6 max-w-sm font-display text-2xl leading-snug text-cream/95">{t.footer.tagline}</p>
+          <div className="mt-9 max-w-md">
+            <p className="font-bold">{t.footer.newsletter}</p>
+            <p className="mb-3 text-sm text-cream/60">{t.footer.newsletterText}</p>
             <NewsletterForm />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-10 break-words sm:grid-cols-3 sm:gap-x-10 [&>*]:min-w-0">
           <div>
-            <p className={heading}>Shop</p>
+            <p className={heading}>{t.footer.shop}</p>
             <ul className="grid gap-2.5 text-[0.95rem]">
               {categories.map((category) => (
                 <li key={category.slug}>
-                  <Link href={`/category/${category.slug}`} className={link}>{category.name}</Link>
+                  <Link href={href(`/category/${category.slug}`)} className={link}>{category.name}</Link>
                 </li>
               ))}
+              <li><Link href={href("/offers")} className={link}>{t.nav.offers}</Link></li>
             </ul>
           </div>
           <div>
-            <p className={heading}>Help</p>
+            <p className={heading}>{t.footer.help}</p>
             <ul className="grid gap-2.5 text-[0.95rem]">
-              <li><Link href="/track" className={link}>Track my order</Link></li>
-              <li><Link href="/delivery" className={link}>Delivery &amp; returns</Link></li>
-              <li><Link href="/faq" className={link}>FAQ</Link></li>
-              <li><Link href="/contact" className={link}>Contact us</Link></li>
-              <li><Link href="/about" className={link}>Our story</Link></li>
-              <li><Link href="/privacy" className={link}>Privacy</Link></li>
-              <li><Link href="/terms" className={link}>Terms</Link></li>
+              <li><Link href={href("/orders")} className={link}>{t.nav.myOrders}</Link></li>
+              <li><Link href={href("/track")} className={link}>{t.nav.track}</Link></li>
+              <li><Link href={href("/delivery")} className={link}>{t.footer.deliveryReturns}</Link></li>
+              <li><Link href={href("/faq")} className={link}>{t.nav.faq}</Link></li>
+              <li><Link href={href("/contact")} className={link}>{t.nav.contact}</Link></li>
+              <li><Link href={href("/wholesale")} className={link}>{t.nav.wholesale}</Link></li>
+              <li><Link href={href("/journal")} className={link}>{t.nav.journal}</Link></li>
+              <li><Link href={href("/about")} className={link}>{t.nav.story}</Link></li>
+              <li><Link href={href("/privacy")} className={link}>{t.footer.privacy}</Link></li>
+              <li><Link href={href("/terms")} className={link}>{t.footer.terms}</Link></li>
             </ul>
           </div>
           <div className="col-span-2 sm:col-span-1">
-            <p className={heading}>Visit us</p>
+            <p className={heading}>{t.footer.visit}</p>
             <ul className="grid gap-4">
               {locations.map((location) => (
                 <li key={location.id}>
                   <a href={googleMapsUrl(location)} target="_blank" rel="noopener noreferrer" className="group flex gap-2.5">
-                    <PiMapPin className="mt-1 shrink-0 text-sun" size={18} aria-hidden="true" />
+                    <PiMapPinFill className="mt-1 shrink-0 text-tomato" size={18} aria-hidden="true" />
                     <span>
-                      <span className="block font-semibold text-cream">{location.area || location.name}</span>
-                      <span className="text-sm text-cream/60 underline-offset-4 group-hover:underline">Open in Google Maps</span>
+                      <span className="block font-bold text-cream">{location.area || location.name}</span>
+                      <span className="text-sm text-cream/60 underline-offset-4 group-hover:underline">{t.common.openInMaps}</span>
                     </span>
                   </a>
                 </li>
               ))}
+              {settings.phone && (
+                <li>
+                  <a href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`} className="flex items-center gap-2.5 text-cream/80 hover:text-white">
+                    <PiPhoneBold size={18} className="text-sun" aria-hidden="true" />
+                    <span dir="ltr">{settings.phone}</span>
+                  </a>
+                </li>
+              )}
             </ul>
             {socials.length > 0 && (
-              <div className="mt-8 flex gap-2">
-                {socials.map(({ href, label, icon: Icon }) => (
+              <div className="mt-7 flex flex-wrap gap-2">
+                {socials.map(({ href: url, label, icon: Icon }) => (
                   <a
                     key={label}
-                    href={href}
-                    target="_blank"
+                    href={url}
+                    target={url.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="grid size-10 place-items-center rounded-full border border-white/20 text-cream/80 transition-colors hover:border-white hover:text-white"
+                    className="grid size-11 place-items-center rounded-full bg-white/10 transition-colors hover:bg-sun hover:text-forest"
                   >
-                    <Icon size={19} />
+                    <Icon size={20} />
                   </a>
                 ))}
               </div>
@@ -133,10 +150,10 @@ export default async function SiteFooter({
         </div>
       </div>
 
-      <div className="border-t border-white/10 pb-24 lg:pb-0">
-        <div className="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs text-cream/50 sm:flex-row">
-          <p>© {new Date().getFullYear()} Ja&apos;deer Organics · Founded by Rasha Yassine · Lebanon</p>
-          <p>Prices in USD · Cash on delivery</p>
+      <div className="border-t border-white/10 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0">
+        <div className="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs text-cream/55 sm:flex-row">
+          <p>© {new Date().getFullYear()} {t.meta.siteName} · {t.footer.rights}</p>
+          <p>{t.common.priceUsd} · {t.common.cod}</p>
         </div>
       </div>
     </footer>

@@ -17,32 +17,31 @@ export default function ProductGallery({
 }) {
   const [active, setActive] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
-  const slides = images.length
-    ? images.map((image) => ({ src: imageUrl(image.path), alt: image.alt || name }))
-    : [{ src: null, alt: name }];
+  const slides = images.length ? images.map((image) => ({ src: imageUrl(image.path), alt: image.alt || name })) : [{ src: null, alt: name }];
   const total = slides.length;
 
   function goTo(index: number) {
     const track = trackRef.current;
-    if (!track) return;
-    track.scrollTo({ left: track.clientWidth * index, behavior: "smooth" });
+    const slide = track?.children[index] as HTMLElement | undefined;
+    if (!track || !slide) return;
+    track.scrollTo({ left: slide.offsetLeft - track.offsetLeft, behavior: "smooth" });
   }
 
   return (
-    <div className="lg:sticky lg:top-28" data-gallery>
+    <div className="min-w-0 lg:sticky lg:top-28" data-gallery>
       <div className="relative overflow-hidden rounded-3xl" style={{ background: art.background }}>
         <div
           ref={trackRef}
-          className="scrollbar-none flex snap-x snap-mandatory overflow-x-auto"
+          className="scroll-row"
           onScroll={(event) => {
             const el = event.currentTarget;
-            setActive(Math.round(el.scrollLeft / el.clientWidth));
+            setActive(Math.round(Math.abs(el.scrollLeft) / el.clientWidth));
           }}
           aria-roledescription="carousel"
-          aria-label={`${name} photos`}
+          aria-label={name}
         >
           {slides.map((slide, i) => (
-            <div key={i} className="relative aspect-[4/5] w-full shrink-0 snap-center" aria-label={`${i + 1} of ${total}`}>
+            <div key={i} className="relative aspect-square w-full shrink-0 sm:aspect-[4/5]">
               {slide.src ? (
                 <Image src={slide.src} alt={slide.alt} fill priority={i === 0} sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
               ) : (
@@ -54,7 +53,7 @@ export default function ProductGallery({
 
         {total > 1 && (
           <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-1.5">
-            {Array.from({ length: total }, (_, i) => (
+            {slides.map((_, i) => (
               <span key={i} className={`h-2 rounded-full bg-white shadow transition-all ${i === active ? "w-6" : "w-2 opacity-60"}`} />
             ))}
           </div>
@@ -68,18 +67,12 @@ export default function ProductGallery({
               key={i}
               type="button"
               onClick={() => goTo(i)}
-              aria-label={`Show photo ${i + 1}`}
+              aria-label={`${i + 1} / ${total}`}
               aria-current={i === active}
-              className={`relative aspect-square w-20 overflow-hidden rounded-xl border-2 transition-colors ${
-                i === active ? "border-ink" : "border-transparent opacity-70 hover:opacity-100"
-              }`}
+              className={`relative aspect-square w-20 overflow-hidden rounded-xl border-2 transition-colors ${i === active ? "border-tomato" : "border-transparent opacity-70 hover:opacity-100"}`}
               style={{ background: art.background }}
             >
-              {slide.src ? (
-                <Image src={slide.src} alt="" fill sizes="80px" className="object-cover" />
-              ) : (
-                <ProductArt shape={art.shape} color={art.color} background={art.background} name={name} className="absolute inset-0 h-full w-full" />
-              )}
+              {slide.src && <Image src={slide.src} alt="" fill sizes="80px" className="object-cover" />}
             </button>
           ))}
         </div>

@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { PiCheckBold, PiHeart, PiHeartFill, PiPlusBold, PiStarFill } from "react-icons/pi";
 import ProductVisual from "@/components/product-visual";
-import { BADGES } from "@/lib/badges";
-import { addToCart, toggleWishlist, useWishlist } from "@/lib/cart";
+import { useI18n } from "@/components/i18n-provider";
+import { addToCart, cartErrorMessage, toggleWishlist, useWishlist } from "@/lib/cart";
 import { flyToBag } from "@/lib/fly-to-bag";
 import { shortMoney } from "@/lib/format";
 import type { ArtShape, BadgeKey } from "@/lib/badges";
@@ -14,7 +14,7 @@ export type CardProduct = {
   id: string;
   slug: string;
   name: string;
-  nameAr: string;
+  nameEn?: string;
   tagline?: string;
   badges: BadgeKey[];
   art: { shape: ArtShape; color: string; background: string };
@@ -33,6 +33,7 @@ export default function ProductCard({
   priority?: boolean;
   lowStockThreshold?: number;
 }) {
+  const { t, href } = useI18n();
   const imageRef = useRef<HTMLDivElement>(null);
   const { ids } = useWishlist();
   const saved = ids.includes(product.id);
@@ -46,7 +47,17 @@ export default function ProductCard({
   const onSale = product.variants.some((v) => v.compareAt && v.compareAt > v.price);
   const totalStock = product.variants.reduce((sum, v) => sum + v.stock, 0);
   const lowStock = !soldOut && totalStock <= lowStockThreshold;
-  const tag = soldOut ? "Sold out" : onSale ? "Sale" : lowStock ? `Only ${totalStock} left` : product.badges.includes("bestseller") ? "Bestseller" : product.badges.includes("new") ? "New" : null;
+  const tag = soldOut
+    ? { text: t.common.soldOut, cls: "bg-ink text-cream" }
+    : onSale
+      ? { text: t.common.sale, cls: "bg-tomato text-white" }
+      : lowStock
+        ? { text: t.common.onlyLeft(totalStock), cls: "bg-sun text-ink" }
+        : product.badges.includes("bestseller")
+          ? { text: t.common.bestseller, cls: "bg-leaf text-white" }
+          : product.badges.includes("new")
+            ? { text: t.common.new, cls: "bg-berry text-white" }
+            : null;
 
   function add(variantId: string, stock: number) {
     try {
@@ -57,31 +68,32 @@ export default function ProductCard({
       setError(null);
       window.setTimeout(() => setAdded(false), 1400);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not add to bag.");
-      window.setTimeout(() => setError(null), 2500);
+      setError(cartErrorMessage(e, t.cartErrors));
+      window.setTimeout(() => setError(null), 2800);
     }
   }
 
   const labels = product.badges.filter((b) => b !== "bestseller" && b !== "new").slice(0, 2);
+  const url = href(`/products/${product.slug}`);
 
   return (
     <article className="group relative flex h-full flex-col">
-      <div className="relative overflow-hidden rounded-2xl bg-sand">
-        <Link href={`/products/${product.slug}`} aria-label={product.name} className="block">
+      <div className="relative overflow-hidden rounded-[1.4rem]" style={{ background: product.art.background }}>
+        <Link href={url} aria-label={product.name} className="block">
           <div ref={imageRef} className="relative aspect-[4/5] overflow-hidden">
             <ProductVisual
               image={product.image}
               alt={product.name}
               art={product.art}
               priority={priority}
-              className="transition-transform duration-[1.2s] ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-[1.04]"
+              className="transition-transform duration-[1.1s] ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-[1.05]"
             />
           </div>
         </Link>
 
         {tag && (
-          <span className={`pointer-events-none absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.08em] ${soldOut ? "bg-ink text-cream" : onSale ? "bg-tomato text-white" : "bg-paper/95 text-ink"}`}>
-            {tag}
+          <span className={`pointer-events-none absolute start-2.5 top-2.5 rounded-full px-2.5 py-1 text-[0.68rem] font-extrabold en:uppercase en:tracking-[0.06em] ${tag.cls}`}>
+            {tag.text}
           </span>
         )}
 
@@ -89,17 +101,17 @@ export default function ProductCard({
           type="button"
           onClick={() => toggleWishlist(product.id)}
           aria-pressed={saved}
-          aria-label={saved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
-          className={`absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-paper/95 transition-colors hover:bg-white ${saved ? "text-tomato" : "text-ink"}`}
+          aria-label={saved ? t.common.removeFromWishlist(product.name) : t.common.saveToWishlist(product.name)}
+          className={`absolute end-2.5 top-2.5 grid size-9 place-items-center rounded-full bg-white/95 shadow-soft transition-transform hover:scale-110 active:scale-95 ${saved ? "text-berry" : "text-ink"}`}
         >
           {saved ? <PiHeartFill size={17} className="animate-pop" /> : <PiHeart size={17} />}
         </button>
 
         {!soldOut && (
-          <div className="absolute inset-x-3 bottom-3">
+          <div className="absolute inset-x-2.5 bottom-2.5">
             {choosing ? (
-              <div className="animate-pop rounded-xl bg-paper p-2 shadow-pop" role="group" aria-label="Choose a size">
-                <p className="px-1 pb-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-ink-soft">Choose a size</p>
+              <div className="animate-pop rounded-2xl bg-paper p-2 shadow-pop" role="group" aria-label={t.common.chooseSize}>
+                <p className="px-1 pb-1.5 text-[0.7rem] font-extrabold text-ink-soft en:uppercase en:tracking-[0.1em]">{t.common.chooseSize}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {product.variants.map((variant) => (
                     <button
@@ -107,28 +119,28 @@ export default function ProductCard({
                       type="button"
                       disabled={variant.stock < 1}
                       onClick={() => add(variant.id, variant.stock)}
-                      className="flex-1 rounded-lg border border-line px-2 py-1.5 text-sm font-semibold transition-colors hover:border-ink disabled:opacity-40"
+                      className="min-h-11 flex-1 rounded-xl bg-white px-2 py-1.5 text-sm font-bold shadow-[inset_0_0_0_1.5px_var(--color-line)] transition-shadow hover:shadow-[inset_0_0_0_1.5px_var(--color-leaf)] disabled:opacity-40"
                     >
                       {variant.label}
-                      <span className="block text-xs font-medium text-ink-soft">{shortMoney(variant.price)}</span>
+                      <span className="block text-xs font-semibold text-ink-soft">{shortMoney(variant.price)}</span>
                     </button>
                   ))}
                 </div>
-                <button type="button" onClick={() => setChoosing(false)} className="mt-1 w-full py-1 text-xs font-semibold text-ink-soft hover:text-ink">
-                  Cancel
+                <button type="button" onClick={() => setChoosing(false)} className="mt-1 w-full py-1.5 text-xs font-bold text-ink-soft hover:text-ink">
+                  {t.common.cancel}
                 </button>
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => (inStock.length === 1 && product.variants.length === 1 ? add(inStock[0].id, inStock[0].stock) : setChoosing(true))}
-                className={`flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold transition-all duration-300 lg:translate-y-2 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:focus-visible:translate-y-0 lg:focus-visible:opacity-100 ${
-                  added ? "bg-leaf text-white !opacity-100 !translate-y-0" : "bg-paper/95 text-ink hover:bg-ink hover:text-cream"
+                className={`flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-[0.82rem] font-bold shadow-soft transition-all duration-300 lg:translate-y-2 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:focus-visible:translate-y-0 lg:focus-visible:opacity-100 ${
+                  added ? "bg-leaf text-white lg:translate-y-0 lg:opacity-100" : "bg-white/95 text-ink hover:bg-leaf hover:text-white"
                 }`}
-                aria-label={`Add ${product.name} to bag`}
+                aria-label={`${t.common.addToBag}: ${product.name}`}
               >
                 {added ? <PiCheckBold size={15} /> : <PiPlusBold size={15} />}
-                <span>{added ? "Added to bag" : "Add to bag"}</span>
+                <span>{added ? t.common.added : t.common.addToBag}</span>
               </button>
             )}
           </div>
@@ -136,26 +148,26 @@ export default function ProductCard({
       </div>
 
       {error && (
-        <p role="alert" className="mt-2 rounded-lg bg-tomato/10 px-3 py-1.5 text-xs font-semibold text-tomato">
+        <p role="alert" className="mt-2 rounded-xl bg-tomato/10 px-3 py-1.5 text-xs font-bold text-tomato">
           {error}
         </p>
       )}
 
-      <div className="flex flex-1 flex-col pt-3.5">
+      <div className="flex flex-1 flex-col pt-3">
         {labels.length > 0 && (
-          <p className="mb-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-ink-soft">
-            {labels.map((b) => BADGES[b].label).join(" · ")}
+          <p className="mb-1 text-[0.68rem] font-extrabold text-leaf en:uppercase en:tracking-[0.1em]">
+            {labels.map((b) => t.badges[b]).join(" · ")}
           </p>
         )}
-        <h3 className="font-display text-[1.15rem] leading-snug">
-          <Link href={`/products/${product.slug}`} className="transition-colors hover:text-leaf">
+        <h3 className="font-display text-[1.12rem] leading-snug ar:text-[1.05rem]">
+          <Link href={url} className="transition-colors hover:text-tomato">
             {product.name}
           </Link>
         </h3>
         <div className="mt-auto flex items-baseline justify-between gap-2 pt-1.5">
           <p className="flex items-baseline gap-2">
-            <span className="font-semibold text-ink">
-              {product.variants.length > 1 && <span className="text-sm font-normal text-ink-soft">From </span>}
+            <span className="font-extrabold text-ink">
+              {product.variants.length > 1 && <span className="text-xs font-semibold text-ink-soft">{t.common.from} </span>}
               {shortMoney(cheapest.price)}
             </span>
             {cheapest.compareAt && cheapest.compareAt > cheapest.price && (
@@ -163,8 +175,8 @@ export default function ProductCard({
             )}
           </p>
           {product.rating && product.rating.count > 0 && (
-            <span className="flex items-center gap-1 text-xs font-semibold text-ink-soft">
-              <PiStarFill className="text-sun" /> {product.rating.average.toFixed(1)}
+            <span className="flex items-center gap-1 text-xs font-bold text-ink-soft">
+              <PiStarFill className="text-sun" aria-hidden="true" /> {product.rating.average.toFixed(1)}
             </span>
           )}
         </div>

@@ -74,7 +74,7 @@ function write(key: string, value: unknown) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    throw new Error("Your browser is blocking site storage. Please allow it to use the bag.");
+    throw new Error("STORAGE");
   }
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
@@ -117,9 +117,9 @@ export function toggleWishlist(productId: string): boolean {
 
 export function addToCart(variantId: string, quantity: number, stock: number) {
   if (!UUID.test(variantId) || !Number.isInteger(quantity) || quantity < 1) {
-    throw new Error("Choose a valid quantity.");
+    throw new Error("INVALID");
   }
-  if (stock < 1) throw new Error("This size is sold out.");
+  if (stock < 1) throw new Error("SOLD_OUT");
 
   const id = variantId.toLowerCase();
   const items = parseCart(read(CART_KEY));
@@ -128,14 +128,10 @@ export function addToCart(variantId: string, quantity: number, stock: number) {
   const next = (existing?.quantity ?? 0) + quantity;
 
   if (next > maximum) {
-    throw new Error(
-      existing
-        ? `You already have ${existing.quantity} in your bag — only ${maximum} available.`
-        : `Only ${maximum} available.`,
-    );
+    throw new Error(`LIMIT:${maximum}`);
   }
   if (!existing && items.length >= MAX_LINES) {
-    throw new Error("Your bag is full. Place this order first.");
+    throw new Error("BAG_FULL");
   }
 
   write(
@@ -173,4 +169,14 @@ export function clearCart() {
 
 export function openBag() {
   window.dispatchEvent(new Event(OPEN_BAG_EVENT));
+}
+
+/** A friendly, translated message for an error thrown by the bag. */
+export function cartErrorMessage(error: unknown, messages: { soldOut: string; limit: (n: number) => string; full: string; storage: string; generic: string }): string {
+  const code = error instanceof Error ? error.message : "";
+  if (code === "SOLD_OUT") return messages.soldOut;
+  if (code.startsWith("LIMIT:")) return messages.limit(Number(code.slice(6)));
+  if (code === "BAG_FULL") return messages.full;
+  if (code === "STORAGE") return messages.storage;
+  return messages.generic;
 }

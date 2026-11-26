@@ -1,49 +1,61 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+// English lives at the root ("/shop"), Arabic under "/ar" ("/ar/shop").
+// Internally every shop page is rendered from app/[locale], so English
+// requests are rewritten to "/en/…". The admin keeps its own session.
 
+async function refreshAdminSession(request: NextRequest) {
+  let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  if (!url || !key) {
-    throw new Error(
-      "Missing Supabase configuration. Check your .env.local file."
-    );
-  }
+  if (!url || !key) return response;
 
   const supabase = createServerClient(url, key, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
       },
-
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => {
-          request.cookies.set(name, value);
-        });
-
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
-
-        cookiesToSet.forEach(({ name, value, options }) => {
-          response.cookies.set(name, value, options);
-        });
+        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
       },
     },
   });
 
-  // Validate the session and refresh it if needed.
   await supabase.auth.getUser();
 
-  // Authenticated responses must not be stored in shared caches.
   response.headers.set("Cache-Control", "private, no-store");
-  response.headers.set("Pragma", "no-cache");
-  response.headers.set("Expires", "0");
-
   return response;
 }
 
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname === "/login" || pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return refreshAdminSession(request);
+  }
+
+  // Old or hand-typed "/en/…" addresses go to the clean English address.
+  if (pathname === "/en" || pathname.startsWith("/en/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.slice(3) || "/";
+    return NextResponse.redirect(url, 308);
+  }
+
+  if (pathname === "/ar" || pathname.startsWith("/ar/")) {
+    return NextResponse.next();
+  }
+
+  const url = request.nextUrl.clone();
+  url.pathname = `/en${pathname === "/" ? "" : pathname}`;
+  return NextResponse.rewrite(url);
+}
+
 export const config = {
-  matcher: ["/login", "/admin/:path*"],
+  matcher: [
+    // Everything except Next.js internals, metadata files and static files.
+    "/((?!_next/|.*\\.[a-zA-Z0-9]+$).*)",
+  ],
 };

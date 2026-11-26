@@ -3,34 +3,43 @@ import type { Product, StoreLocation, StoreSettings } from "@/lib/catalog";
 import { imageUrl } from "@/lib/images";
 import { googleMapsUrl } from "@/lib/maps";
 import { SITE_DESCRIPTION, SITE_NAME, siteUrlOrLocal } from "@/lib/site";
+import { dictionary } from "@/lib/i18n";
+import { localePath, type Locale } from "@/lib/i18n/config";
 
 export function pageMetadata({
+  locale,
   title,
   description,
   path,
   image,
 }: {
+  locale: Locale;
   title: string;
   description: string;
   path: string;
   image?: string | null;
 }): Metadata {
+  const t = dictionary(locale);
   const images = image ? [{ url: image, alt: title }] : undefined;
+  const url = localePath(locale, path);
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: {
+      canonical: url,
+      languages: { en: localePath("en", path), ar: localePath("ar", path), "x-default": localePath("en", path) },
+    },
     openGraph: {
       type: "website",
-      siteName: SITE_NAME,
-      url: path,
-      title: `${title} | ${SITE_NAME}`,
+      siteName: t.meta.siteName,
+      url,
+      title: `${title} | ${t.meta.siteName}`,
       description,
       ...(images ? { images } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${SITE_NAME}`,
+      title: `${title} | ${t.meta.siteName}`,
       description,
       ...(images ? { images: images.map((i) => i.url) } : {}),
     },
@@ -98,7 +107,7 @@ export function organizationJsonLd(settings: StoreSettings, locations: StoreLoca
   };
 }
 
-export function productJsonLd(product: Product) {
+export function productJsonLd(product: Product, locale: Locale = "en") {
   const image = product.images.map((i) => imageUrl(i.path)).filter(Boolean) as string[];
   const prices = product.variants.map((v) => v.price / 100);
   const inStock = product.variants.some((v) => v.stock > 0);
@@ -107,13 +116,14 @@ export function productJsonLd(product: Product) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    alternateName: product.nameAr || undefined,
+    alternateName: product.nameEn !== product.name ? product.nameEn : undefined,
     description: product.tagline || product.description.slice(0, 300),
     image: image.length ? image.map(absolute) : [absolute("/brand/icon-512.png")],
     sku: product.variants[0]?.id,
     brand: { "@type": "Brand", name: SITE_NAME },
     category: product.categoryName ?? undefined,
-    url: absolute(`/products/${product.slug}`),
+    url: absolute(localePath(locale, `/products/${product.slug}`)),
+    inLanguage: locale,
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "USD",

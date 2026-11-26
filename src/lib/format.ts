@@ -25,12 +25,17 @@ export const dateOnly = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Beirut",
 });
 
-export function formatDateTime(value: string | null | undefined): string {
-  return value ? dateTime.format(new Date(value)) : "—";
+const arDateTime = new Intl.DateTimeFormat("ar-LB-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Beirut" });
+const arDateOnly = new Intl.DateTimeFormat("ar-LB-u-nu-latn", { dateStyle: "medium", timeZone: "Asia/Beirut" });
+
+export function formatDateTime(value: string | null | undefined, locale: "en" | "ar" = "en"): string {
+  if (!value) return "—";
+  return (locale === "ar" ? arDateTime : dateTime).format(new Date(value));
 }
 
-export function formatDate(value: string | null | undefined): string {
-  return value ? dateOnly.format(new Date(value)) : "—";
+export function formatDate(value: string | null | undefined, locale: "en" | "ar" = "en"): string {
+  if (!value) return "—";
+  return (locale === "ar" ? arDateOnly : dateOnly).format(new Date(value));
 }
 
 export function timeAgo(value: string, now = Date.now()): string {

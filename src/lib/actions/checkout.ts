@@ -2,13 +2,20 @@
 
 import { createHash } from "node:crypto";
 import { revalidateTag } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
+import { dictionary } from "@/lib/i18n";
+import { isLocale, type Locale } from "@/lib/i18n/config";
+import { notifyShopOfOrder, sendOrderEmail } from "@/lib/emails";
 import { normalizePhone } from "@/lib/phone";
 import { allowAttempt } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/service";
 import type { AppliedPromo } from "@/lib/pricing";
 
 const TOKEN = /^[A-Za-z0-9_-]{43}$/;
+
+const asLocale = (value: unknown): Locale => (isLocale(value) ? value : "en");
+const usd = (cents: number) => "$" + (cents / 100).toFixed(2);
 
 function sha256(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
@@ -20,20 +27,13 @@ function sha256(value: string): string {
 
 export type PromoResult = { ok: true; promo: AppliedPromo } | { ok: false; error: string };
 
-export async function checkPromoCode(rawCode: unknown, subtotal: unknown): Promise<PromoResult> {
-  const code = z
-    .string()
-    .trim()
-    .toUpperCase()
-    .regex(/^[A-Z0-9_-]{3,30}$/)
-    .safeParse(rawCode);
+export async function checkPromoCode(rawCode: unknown, subtotal: unknown, rawLocale?: unknown): Promise<PromoResult> {
+  const m = dictionary(asLocale(rawLocale)).messages;
+  const code = z.string().trim().toUpperCase().regex(/^[A-Z0-9_-]{3,30}$/).safeParse(rawCode);
   const amount = z.number().int().min(0).max(100_000_000).safeParse(subtotal);
+  if (!code.success || !amount.success) return { ok: false, error: m.promoInvalid };
 
-  if (!code.success || !amount.success) return { ok: false, error: "This code isn't valid." };
-
-  if (!(await allowAttempt("promo", 15, 600))) {
-    return { ok: false, error: "Too many attempts. Please wait a few minutes." };
-  }
+  if (!(await allowAttempt("promo", 15, 600))) return { ok: false, error: m.promoWait };
 
   const supabase = createServiceClient();
   const { data: promo } = await supabase
@@ -50,25 +50,13 @@ export async function checkPromoCode(rawCode: unknown, subtotal: unknown): Promi
     (promo.ends_at && new Date(promo.ends_at).getTime() <= now) ||
     (promo.max_uses != null && promo.uses_count >= promo.max_uses)
   ) {
-    return { ok: false, error: "This code isn't valid or has expired." };
+    return { ok: false, error: m.promoInvalid };
   }
-
-  if (amount.data < promo.min_order_cents) {
-    return {
-      ok: false,
-      error: `This code needs a minimum order of $${(promo.min_order_cents / 100).toFixed(2)}.`,
-    };
-  }
+  if (amount.data < promo.min_order_cents) return { ok: false, error: m.promoMinimum(usd(promo.min_order_cents)) };
 
   return {
     ok: true,
-    promo: {
-      code: promo.code,
-      kind: promo.kind,
-      value: promo.value,
-      minOrderCents: promo.min_order_cents,
-      description: promo.description,
-    },
+    promo: { code: promo.code, kind: promo.kind, value: promo.value, minOrderCents: promo.min_order_cents, description: promo.description },
   };
 }
 
@@ -79,64 +67,50 @@ export async function checkPromoCode(rawCode: unknown, subtotal: unknown): Promi
 const orderSchema = z.object({
   checkoutKey: z.uuid(),
   trackingToken: z.string().regex(TOKEN),
-  name: z.string().trim().min(2, "Please enter your full name.").max(100),
-  phone: z.string().trim().min(6, "Please enter your phone number.").max(40),
+  name: z.string().trim().min(2).max(100),
+  phone: z.string().trim().min(6).max(40),
   email: z
     .string()
     .trim()
     .toLowerCase()
     .max(254)
-    .refine((v) => v === "" || z.email().safeParse(v).success, "Please check your email address."),
-  zoneId: z.uuid("Please choose your delivery area."),
-  address: z.string().trim().min(5, "Please enter your full address.").max(500),
+    .refine((v) => v === "" || z.email().safeParse(v).success),
+  zoneId: z.uuid(),
+  address: z.string().trim().min(5).max(500),
   notes: z.string().trim().max(1000),
   promoCode: z.string().trim().toUpperCase().max(30),
-  items: z
-    .array(z.object({ variantId: z.uuid(), quantity: z.number().int().min(1).max(99) }))
-    .min(1, "Your bag is empty.")
-    .max(50),
+  items: z.array(z.object({ variantId: z.uuid(), quantity: z.number().int().min(1).max(99) })).min(1).max(50),
   expectedTotal: z.number().int().min(0),
+  locale: z.enum(["en", "ar"]).default("en"),
 });
 
 export type PlaceOrderResult =
   | { ok: true; orderNumber: number; token: string }
   | { ok: false; error: string; field?: string; retry?: boolean };
 
-const REJECTED: Record<string, string> = {
-  INVALID_CHECKOUT_REQUEST: "Please review your details and try again.",
-  STORE_CLOSED: "We're not taking online orders right now. Please message us on WhatsApp.",
-  INVALID_CUSTOMER_NAME: "Please check your name.",
-  INVALID_CUSTOMER_PHONE: "Please check your phone number.",
-  INVALID_CUSTOMER_EMAIL: "Please check your email address.",
-  INVALID_DELIVERY_ADDRESS: "Please check your delivery address.",
-  INVALID_CUSTOMER_NOTES: "Your note is too long.",
-  INVALID_CART: "Please check the items in your bag.",
-  DELIVERY_ZONE_UNAVAILABLE: "This delivery area is no longer available. Please choose another one.",
-  PRODUCT_UNAVAILABLE: "An item in your bag is no longer available. Please update your bag.",
-  INSUFFICIENT_STOCK: "Some stock just changed. Please check the quantities in your bag.",
-  BELOW_MINIMUM: "Your order is below the minimum order amount.",
-  TOTAL_CHANGED: "A price or delivery fee just changed. Please review your total and place the order again.",
-  PROMO_UNAVAILABLE: "Your promo code is no longer valid. Remove it and try again.",
-  PROMO_MINIMUM: "Your order no longer meets the minimum for this promo code.",
-  PROMO_NO_DISCOUNT: "This promo code doesn't give a discount on this order.",
+const FIELD_ERRORS: Record<string, string> = {
+  name: "INVALID_CUSTOMER_NAME",
+  phone: "INVALID_CUSTOMER_PHONE",
+  email: "INVALID_CUSTOMER_EMAIL",
+  zoneId: "DELIVERY_ZONE_UNAVAILABLE",
+  address: "INVALID_DELIVERY_ADDRESS",
+  notes: "INVALID_CUSTOMER_NOTES",
+  items: "INVALID_CART",
 };
 
 export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
+  const m = dictionary(asLocale((input as { locale?: unknown } | null)?.locale)).messages;
   const parsed = orderSchema.safeParse(input);
   if (!parsed.success) {
-    const issue = parsed.error.issues[0];
-    return { ok: false, error: issue?.message ?? "Please check your details.", field: issue?.path[0]?.toString() };
+    const field = parsed.error.issues[0]?.path[0]?.toString() ?? "";
+    return { ok: false, error: m.checkout[FIELD_ERRORS[field] ?? "INVALID_CHECKOUT_REQUEST"], field };
   }
   const order = parsed.data;
 
   const phone = normalizePhone(order.phone);
-  if (!phone) {
-    return { ok: false, error: "Please enter a valid phone number, e.g. 70 123 456.", field: "phone" };
-  }
+  if (!phone) return { ok: false, error: m.invalidPhone, field: "phone" };
 
-  if (!(await allowAttempt("checkout", 12, 3600))) {
-    return { ok: false, error: "Too many orders from this connection. Please message us on WhatsApp." };
-  }
+  if (!(await allowAttempt("checkout", 12, 3600))) return { ok: false, error: m.checkout.TOO_MANY };
 
   // The same checkout retried returns the same order; a changed bag or
   // address is a new request and is rejected for that key.
@@ -156,7 +130,7 @@ export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
   const { data, error } = await supabase.rpc("create_guest_order", {
     p_checkout_key: order.checkoutKey,
     p_request_hash: sha256(JSON.stringify(payload)),
-    p_tracking_token_hash: sha256(order.trackingToken),
+    p_tracking_token: order.trackingToken,
     p_customer_name: order.name,
     p_customer_phone: phone,
     p_customer_email: order.email || null,
@@ -166,13 +140,20 @@ export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
     p_items: payload.items,
     p_promo_code: order.promoCode || null,
     p_expected_total_cents: order.expectedTotal,
+    p_locale: order.locale,
   });
 
   if (error) {
-    const message = error.code === "P0001" ? REJECTED[error.message] : undefined;
+    const message = error.code === "P0001" ? m.checkout[error.message] : undefined;
     if (message) return { ok: false, error: message, retry: error.message === "TOTAL_CHANGED" };
     console.error("Checkout failed:", error.code, error.message);
-    return { ok: false, error: "We couldn't place your order. Please try again in a moment." };
+    return { ok: false, error: m.checkout.FAILED };
+  }
+
+  // Emails to the customer (if they gave one) and to the shop.
+  if (!data.repeated) {
+    after(() => sendOrderEmail(data.orderId, "placed"));
+    after(() => notifyShopOfOrder(data.orderId));
   }
 
   // Stock changed: refresh the storefront in the background.
@@ -193,9 +174,7 @@ const leadSchema = z.object({
   phone: z.string().trim().max(40),
   zone: z.string().trim().max(80),
   subtotal: z.number().int().min(0).max(100_000_000),
-  items: z
-    .array(z.object({ name: z.string().max(140), label: z.string().max(40), quantity: z.number().int().min(1).max(99) }))
-    .max(50),
+  items: z.array(z.object({ name: z.string().max(140), label: z.string().max(40), quantity: z.number().int().min(1).max(99) })).max(50),
 });
 
 export async function saveCheckoutLead(input: unknown): Promise<void> {
@@ -203,7 +182,6 @@ export async function saveCheckoutLead(input: unknown): Promise<void> {
   if (!parsed.success) return;
   const phone = normalizePhone(parsed.data.phone);
   if (!phone || parsed.data.items.length === 0) return;
-
   if (!(await allowAttempt("lead", 20, 3600))) return;
 
   const supabase = createServiceClient();
@@ -234,34 +212,28 @@ export type TrackResult =
         createdAt: string;
         total: number;
         zone: string;
-        items: { name: string; label: string; quantity: number }[];
+        items: { name: string; slug: string; label: string; quantity: number }[];
       };
     }
   | { ok: false; error: string };
 
 export async function trackOrder(_prev: TrackResult | null, formData: FormData): Promise<TrackResult> {
+  const m = dictionary(asLocale(formData.get("locale"))).messages;
   const number = z.coerce.number().int().min(1).max(100_000_000).safeParse(formData.get("number"));
   const phone = normalizePhone(String(formData.get("phone") ?? "").trim());
+  if (!number.success || !phone) return { ok: false, error: m.trackMissing };
 
-  if (!number.success || !phone) {
-    return { ok: false, error: "Please enter your order number and the phone number you ordered with." };
-  }
-
-  if (!(await allowAttempt("track", 10, 3600))) {
-    return { ok: false, error: "Too many attempts. Please try again later or message us on WhatsApp." };
-  }
+  if (!(await allowAttempt("track", 10, 3600))) return { ok: false, error: m.tooMany };
 
   const supabase = createServiceClient();
   const { data } = await supabase
     .from("orders")
-    .select("order_number, status, created_at, total_cents, delivery_zone_name, order_items(product_name, variant_label, quantity)")
+    .select("order_number, status, created_at, total_cents, delivery_zone_name, order_items(product_name, product_slug, variant_label, quantity)")
     .eq("order_number", number.data)
     .eq("customer_phone", phone)
     .maybeSingle();
 
-  if (!data) {
-    return { ok: false, error: "We couldn't find an order with these details. Please check and try again." };
-  }
+  if (!data) return { ok: false, error: m.trackNotFound };
 
   return {
     ok: true,
@@ -271,7 +243,7 @@ export async function trackOrder(_prev: TrackResult | null, formData: FormData):
       createdAt: data.created_at,
       total: data.total_cents,
       zone: data.delivery_zone_name,
-      items: (data.order_items ?? []).map((i) => ({ name: i.product_name, label: i.variant_label, quantity: i.quantity })),
+      items: (data.order_items ?? []).map((i) => ({ name: i.product_name, slug: i.product_slug, label: i.variant_label, quantity: i.quantity })),
     },
   };
 }

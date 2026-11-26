@@ -1,36 +1,38 @@
 "use client";
 
 import { useActionState } from "react";
+import { PiPaperPlaneTiltBold } from "react-icons/pi";
+import { useI18n } from "@/components/i18n-provider";
 import { subscribeNewsletter, type FormState } from "@/lib/actions/newsletter";
 
-export default function NewsletterForm() {
-  const [state, action, pending] = useActionState<FormState, FormData>(subscribeNewsletter, {
-    ok: false,
-    message: "",
-  });
+export default function NewsletterForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
+  const { t, locale } = useI18n();
+  const [state, action, pending] = useActionState<FormState, FormData>(subscribeNewsletter, { ok: false, message: "" });
+  const dark = tone === "dark";
 
   return (
     <form action={action} className="w-full">
-      <div className="flex flex-col gap-2 sm:flex-row sm:rounded-full sm:border sm:border-white/20 sm:p-1">
-        <label htmlFor="newsletter-email" className="sr-only">
-          Email address
-        </label>
+      <input type="hidden" name="locale" value={locale} />
+      <div className={`flex gap-2 rounded-full p-1.5 ${dark ? "bg-white/10 ring-1 ring-white/20" : "bg-white shadow-soft"}`}>
+        <label htmlFor={`newsletter-email-${tone}`} className="sr-only">{t.footer.emailPlaceholder}</label>
         <input
-          id="newsletter-email"
+          id={`newsletter-email-${tone}`}
           name="email"
           type="email"
           required
           maxLength={254}
           autoComplete="email"
-          placeholder="Your email address"
-          className="min-h-12 flex-1 rounded-full border border-white/20 bg-transparent px-5 text-cream outline-none placeholder:text-cream/40 focus:border-white/60 sm:border-0"
+          inputMode="email"
+          placeholder={t.footer.emailPlaceholder}
+          className={`min-h-11 min-w-0 flex-1 rounded-full bg-transparent px-4 text-[16px] outline-none ${dark ? "text-cream placeholder:text-cream/50" : "text-ink placeholder:text-ink-soft/60"}`}
         />
         <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp-field" aria-hidden="true" />
-        <button type="submit" className="btn bg-cream text-ink hover:bg-white" disabled={pending}>
-          {pending ? "Subscribing…" : "Subscribe"}
+        <button type="submit" className="btn btn-sun shrink-0 px-5" disabled={pending}>
+          <PiPaperPlaneTiltBold className="rtl:-scale-x-100" aria-hidden="true" />
+          <span className="max-sm:sr-only">{pending ? t.footer.subscribing : t.footer.subscribe}</span>
         </button>
       </div>
-      <p role="status" aria-live="polite" className={`mt-2 min-h-6 text-sm font-semibold ${state.ok ? "text-lime" : "text-[#f0b59b]"}`}>
+      <p role="status" aria-live="polite" className={`mt-2 min-h-6 text-sm font-bold ${state.ok ? (dark ? "text-lime" : "text-leaf") : dark ? "text-[#ffb59a]" : "text-tomato"}`}>
         {state.message}
       </p>
     </form>
