@@ -30,7 +30,7 @@ export default function ProductGallery({
 
   return (
     <div className="lg:sticky lg:top-28" data-gallery>
-      <div className="relative overflow-hidden rounded-[2rem]" style={{ background: art.background }}>
+      <div className="relative overflow-hidden rounded-3xl" style={{ background: art.background }}>
         <div
           ref={trackRef}
           className="scrollbar-none flex snap-x snap-mandatory overflow-x-auto"
@@ -70,8 +70,8 @@ export default function ProductGallery({
               onClick={() => goTo(i)}
               aria-label={`Show photo ${i + 1}`}
               aria-current={i === active}
-              className={`relative aspect-square w-20 overflow-hidden rounded-2xl border-[3px] transition-colors ${
-                i === active ? "border-leaf" : "border-transparent opacity-75 hover:opacity-100"
+              className={`relative aspect-square w-20 overflow-hidden rounded-xl border-2 transition-colors ${
+                i === active ? "border-ink" : "border-transparent opacity-70 hover:opacity-100"
               }`}
               style={{ background: art.background }}
             >

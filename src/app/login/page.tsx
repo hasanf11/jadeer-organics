@@ -25,7 +25,7 @@ export default function LoginPage() {
       <section className="relative w-full max-w-md rounded-[2rem] bg-white p-7 shadow-pop md:p-9" aria-labelledby="login-title">
         <Link href="/" aria-label="Ja'deer Organics home"><Logo /></Link>
         <p className="eyebrow mt-8">Shop administration</p>
-        <h1 id="login-title" className="mt-1 text-4xl">Welcome back 🌿</h1>
+        <h1 id="login-title" className="mt-1 text-4xl">Welcome back</h1>
         <p className="mb-6 mt-2 text-ink-soft">Sign in to manage orders, products and your shop.</p>
         <Suspense fallback={<p role="status" className="text-ink-soft">Checking your session…</p>}>
           <LoginContent />

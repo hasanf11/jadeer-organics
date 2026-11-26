@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { imageUrl } from "@/lib/images";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getStorefront, toCardProduct } from "@/lib/catalog";
@@ -39,6 +41,7 @@ async function CategoryContent({ params }: { params: PageProps<"/category/[slug]
   const category = categories.find((c) => c.slug === slug);
   if (!category) notFound();
 
+  const banner = imageUrl(category.image);
   const list = products
     .filter((p) => p.categoryId === category.id)
     .map((p) => ({ ...toCardProduct(p), categorySlug: p.categorySlug, featured: p.featured, createdAt: p.createdAt, sortOrder: p.sortOrder }));
@@ -52,37 +55,39 @@ async function CategoryContent({ params }: { params: PageProps<"/category/[slug]
           { name: category.name, path: `/category/${category.slug}` },
         ])}
       />
-      <section className="relative overflow-hidden" style={{ background: `${category.color}1f` }}>
-        <div aria-hidden="true" className="absolute -right-10 top-1/2 -translate-y-1/2 select-none text-[14rem] leading-none opacity-20 md:right-10 md:text-[18rem]">
-          {category.emoji}
-        </div>
-        <div className="container-x relative py-10 md:py-16">
-          <nav aria-label="Breadcrumb" className="text-sm font-semibold text-ink-soft">
-            <Link href="/" className="hover:text-ink">Home</Link> / <Link href="/shop" className="hover:text-ink">Shop</Link> /{" "}
-            <span className="text-ink">{category.name}</span>
-          </nav>
-          <p className="arabic mt-4 text-2xl" dir="rtl" lang="ar" style={{ color: category.color }}>
-            {category.nameAr}
-          </p>
-          <h1 className="display-xl" style={{ color: category.color }}>
-            {category.name}
-          </h1>
-          <p className="mt-3 max-w-xl text-lg text-ink-soft">{category.description}</p>
+      <section className="container-x pt-6 md:pt-10">
+        <nav aria-label="Breadcrumb" className="text-sm text-ink-soft">
+          <Link href="/" className="hover:text-ink">Home</Link> <span className="mx-1.5">/</span>
+          <Link href="/shop" className="hover:text-ink">Shop</Link> <span className="mx-1.5">/</span>
+          <span className="text-ink">{category.name}</span>
+        </nav>
+        <div className="mt-6 grid items-end gap-8 overflow-hidden rounded-3xl bg-sand md:grid-cols-[1.2fr_1fr]">
+          <div className="p-8 md:p-12">
+            <p className="arabic text-lg text-ink-soft" dir="rtl" lang="ar">{category.nameAr}</p>
+            <h1 className="display-xl mt-1">{category.name}</h1>
+            <p className="mt-4 max-w-lg text-lg text-ink-soft">{category.description}</p>
+            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-ink-soft">{list.length} products</p>
+          </div>
+          {banner && (
+            <div className="relative h-64 md:h-full md:min-h-80">
+              <Image src={banner} alt="" fill priority sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
+            </div>
+          )}
         </div>
       </section>
 
-      <div className="container-x mt-6">
-        <div className="scrollbar-none -mx-4 mb-8 flex gap-2 overflow-x-auto px-4">
+      <div className="container-x mt-10">
+        <div className="scrollbar-none -mx-5 mb-10 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
           {categories.map((c) => (
             <Link
               key={c.slug}
               href={`/category/${c.slug}`}
               aria-current={c.slug === category.slug ? "page" : undefined}
-              className={`chip shrink-0 border-2 px-4 py-2.5 text-sm ${
-                c.slug === category.slug ? "border-ink bg-ink text-cream" : "border-line bg-white hover:border-ink"
+              className={`chip shrink-0 px-4 py-2.5 text-[0.82rem] ${
+                c.slug === category.slug ? "bg-ink text-cream" : "bg-paper text-ink shadow-[inset_0_0_0_1px_var(--color-line)] hover:shadow-[inset_0_0_0_1px_var(--color-ink)]"
               }`}
             >
-              {c.emoji} {c.name}
+              {c.name}
             </Link>
           ))}
         </div>

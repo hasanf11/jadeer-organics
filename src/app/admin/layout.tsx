@@ -66,7 +66,7 @@ async function Workspace({ children }: { children: ReactNode }) {
         </Link>
         <span className="hidden rounded-full bg-mint px-3 py-1 text-xs font-bold uppercase tracking-wider text-leaf-dark sm:inline">Admin</span>
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden text-sm font-semibold text-ink-soft md:inline">Hi, {admin.displayName} 👋</span>
+          <span className="hidden text-sm font-semibold text-ink-soft md:inline">Hi, {admin.displayName}</span>
           <Link href="/" target="_blank" className="btn btn-soft btn-sm">
             View shop <PiArrowUpRightBold />
           </Link>

@@ -104,7 +104,7 @@ export default function SearchDialog() {
       }}
       onClose={() => setQuery("")}
     >
-      <div className="flex h-full flex-col bg-cream sm:h-auto sm:max-h-[80vh] sm:rounded-[2rem] sm:shadow-pop" data-lenis-prevent>
+      <div className="flex h-full flex-col bg-cream sm:h-auto sm:max-h-[80vh] sm:rounded-2xl sm:shadow-pop" data-lenis-prevent>
         <form
           role="search"
           className="flex items-center gap-2 border-b border-line p-3 sm:p-4"
@@ -115,14 +115,14 @@ export default function SearchDialog() {
             router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
           }}
         >
-          <PiMagnifyingGlassBold size={22} className="ml-2 shrink-0 text-leaf" />
+          <PiMagnifyingGlassBold size={20} className="ml-2 shrink-0 text-ink-soft" />
           <input
             ref={inputRef}
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search olive oil, ketchup, matcha…"
-            className="min-w-0 flex-1 bg-transparent px-2 py-3 text-lg font-semibold outline-none placeholder:text-ink-soft/60"
+            className="min-w-0 flex-1 bg-transparent px-2 py-3 font-display text-xl outline-none placeholder:text-ink-soft/50"
             enterKeyHint="search"
             autoComplete="off"
             maxLength={80}
@@ -143,7 +143,7 @@ export default function SearchDialog() {
                     key={suggestion}
                     type="button"
                     onClick={() => setQuery(suggestion)}
-                    className="chip border-2 border-line bg-white px-4 py-2 text-sm transition-colors hover:border-leaf hover:text-leaf"
+                    className="chip bg-paper px-4 py-2 text-[0.82rem] shadow-[inset_0_0_0_1px_var(--color-line)] transition-shadow hover:shadow-[inset_0_0_0_1px_var(--color-ink)]"
                   >
                     {suggestion}
                   </button>
@@ -154,8 +154,8 @@ export default function SearchDialog() {
 
           {query.trim() && results.length === 0 && (
             <div className="py-10 text-center">
-              <p className="text-4xl">🥕</p>
-              <p className="mt-3 font-bold">Nothing found for “{query}”.</p>
+              <PiMagnifyingGlassBold size={28} className="mx-auto text-ink-soft" aria-hidden="true" />
+              <p className="mt-3 font-semibold">Nothing found for “{query}”.</p>
               <p className="text-ink-soft">Try another word, or browse the shop.</p>
             </div>
           )}
@@ -175,7 +175,7 @@ export default function SearchDialog() {
                     <span className="block truncate font-bold">{product.name}</span>
                     <span className="block truncate text-sm text-ink-soft">{product.category}</span>
                   </span>
-                  <span className="font-bold text-leaf">
+                  <span className="font-semibold">
                     {shortMoney(Math.min(...product.variants.map((v) => v.price)))}
                   </span>
                 </Link>

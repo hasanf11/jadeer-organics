@@ -77,7 +77,7 @@ create table public.store_settings (
   facebook_url text not null default '' check (char_length(facebook_url) <= 300),
   tiktok_url text not null default '' check (char_length(tiktok_url) <= 300),
   announcement_enabled boolean not null default true,
-  announcement_text text not null default 'Cash on delivery all over Lebanon 🚚  Free delivery on orders over $50' check (char_length(announcement_text) <= 200),
+  announcement_text text not null default 'Cash on delivery all over Lebanon · Free delivery on orders over $50' check (char_length(announcement_text) <= 200),
   free_delivery_threshold_cents integer not null default 5000 check (free_delivery_threshold_cents >= 0),
   min_order_cents integer not null default 0 check (min_order_cents >= 0),
   low_stock_threshold integer not null default 5 check (low_stock_threshold between 0 and 1000),

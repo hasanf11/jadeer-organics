@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { PiShoppingBagOpenBold, PiTrashBold, PiTruckBold, PiXBold } from "react-icons/pi";
+import { PiCheckBold, PiShoppingBagOpenBold, PiTrashBold, PiTruckBold, PiXBold } from "react-icons/pi";
 import ProductVisual from "@/components/product-visual";
 import QuantityStepper from "@/components/store/quantity-stepper";
 import { useStore } from "@/components/store/store-provider";
@@ -42,20 +42,20 @@ export function FreeDeliveryMeter({ subtotal }: { subtotal: number }) {
   const remaining = threshold - subtotal;
 
   return (
-    <div className="rounded-2xl bg-mint/70 p-3">
-      <p className="flex items-center gap-2 text-sm font-bold text-leaf-dark">
+    <div className="rounded-xl bg-sand/70 p-3.5">
+      <p className="flex items-center gap-2 text-sm font-semibold text-ink">
         <PiTruckBold size={18} />
         {remaining > 0 ? (
           <span>
             Add <span className="text-ink">{money(remaining)}</span> for free delivery
           </span>
         ) : (
-          <span>Yay! Your delivery is free 🎉</span>
+          <span>Your delivery is free</span>
         )}
       </p>
-      <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-white">
+      <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-lime to-leaf transition-[width] duration-700 ease-out"
+          className="h-full rounded-full bg-leaf transition-[width] duration-700 ease-out"
           style={{ width: `${progress * 100}%` }}
         />
       </div>
@@ -115,11 +115,10 @@ export default function BagDrawer() {
           if (event.target === dialogRef.current) dialogRef.current?.close();
         }}
       >
-        <div className="flex h-full flex-col bg-cream sm:rounded-l-[2rem]">
+        <div className="flex h-full flex-col bg-cream">
           <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <h2 className="flex items-center gap-2 text-2xl">
-              <PiShoppingBagOpenBold className="text-leaf" /> Your bag
-              <span className="chip bg-ink text-cream">{count}</span>
+            <h2 className="flex items-baseline gap-2 text-2xl">
+              Your bag <span className="font-sans text-sm font-semibold text-ink-soft">({count})</span>
             </h2>
             <button type="button" className="icon-btn" onClick={() => dialogRef.current?.close()} aria-label="Close bag">
               <PiXBold size={22} />
@@ -129,9 +128,9 @@ export default function BagDrawer() {
           <div className="flex-1 overflow-y-auto px-5 py-4" data-lenis-prevent>
             {lines.length === 0 ? (
               <div className="grid place-items-center py-12 text-center">
-                <div className="grid size-28 place-items-center rounded-full bg-butter text-6xl">🧺</div>
+                <div className="grid size-20 place-items-center rounded-full bg-sand text-ink-soft"><PiShoppingBagOpenBold size={30} /></div>
                 <h3 className="mt-5 text-2xl">Your bag is empty</h3>
-                <p className="mt-1 text-ink-soft">Fill it with something good for you.</p>
+                <p className="mt-1 text-ink-soft">Discover our organic pantry essentials.</p>
                 <Link href="/shop" className="btn btn-primary mt-6">
                   Start shopping
                 </Link>
@@ -141,7 +140,7 @@ export default function BagDrawer() {
                 <FreeDeliveryMeter subtotal={subtotal} />
                 <ul className="mt-4 grid gap-3">
                   {lines.map(({ product, variant, quantity }) => (
-                    <li key={variant.id} className="flex gap-3 rounded-2xl bg-white p-2.5">
+                    <li key={variant.id} className="flex gap-3.5 border-b border-line pb-4">
                       <Link
                         href={`/products/${product.slug}`}
                         className="relative block size-20 shrink-0 overflow-hidden rounded-xl"
@@ -193,7 +192,7 @@ export default function BagDrawer() {
                       {suggestions.map((product) => {
                         const variant = product.variants.find((v) => v.stock > 0)!;
                         return (
-                          <li key={product.id} className="flex items-center gap-3 rounded-2xl border border-dashed border-line p-2">
+                          <li key={product.id} className="flex items-center gap-3 rounded-xl bg-paper p-2">
                             <span className="relative block size-12 shrink-0 overflow-hidden rounded-lg">
                               <ProductVisual image={product.image} alt={product.name} art={product.art} sizes="48px" />
                             </span>
@@ -228,7 +227,7 @@ export default function BagDrawer() {
 
           {lines.length > 0 && (
             <div className="safe-bottom border-t border-line bg-paper px-5 pb-5 pt-4">
-              <div className="flex items-center justify-between text-lg font-bold">
+              <div className="flex items-center justify-between text-lg font-semibold">
                 <span>Subtotal</span>
                 <span className="tabular-nums">{money(subtotal)}</span>
               </div>
@@ -254,8 +253,8 @@ export default function BagDrawer() {
         }`}
       >
         {toast && (
-          <span className="flex items-center gap-2 rounded-full bg-ink px-5 py-3 font-bold text-cream shadow-pop">
-            <span className="grid size-6 place-items-center rounded-full bg-lime text-ink">✓</span>
+          <span className="flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-cream shadow-pop">
+            <PiCheckBold size={14} aria-hidden="true" />
             {toast}
           </span>
         )}

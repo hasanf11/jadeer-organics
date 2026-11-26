@@ -3,7 +3,6 @@ import { getStorefront, toCardProduct } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 import ShopBrowser from "@/components/store/shop-browser";
 import ProductGridSkeleton from "@/components/store/product-grid-skeleton";
-import ScrollVelocity from "@/components/motion/scroll-velocity";
 
 export const metadata = pageMetadata({
   title: "Shop organic products",
@@ -25,29 +24,19 @@ export default async function ShopPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-mint">
-        <div className="container-x py-10 md:py-14">
-          <p className="eyebrow">The Ja&apos;deer market</p>
-          <h1 className="display-xl mt-2">Shop all</h1>
-          <p className="mt-3 max-w-xl text-lg text-ink-soft">
-            {products.length} clean, honest products — organic, preservative-free and made with love in Lebanon.
-          </p>
-        </div>
-        <div className="bg-leaf py-2 text-white">
-          <ScrollVelocity
-            items={categories.map((c) => `${c.emoji} ${c.name}`)}
-            speed={30}
-            itemClassName="font-display text-lg font-bold"
-            separator="•"
-          />
-        </div>
+      <section className="container-x pt-10 md:pt-16">
+        <p className="eyebrow">The Ja&apos;deer pantry</p>
+        <h1 className="display-xl mt-4">Shop all</h1>
+        <p className="mt-4 max-w-xl text-lg text-ink-soft">
+          {products.length} honest products — organic, preservative-free and made with care in Lebanon.
+        </p>
       </section>
 
-      <div className="container-x mt-8">
+      <div className="container-x mt-10">
         <Suspense fallback={<ProductGridSkeleton />}>
           <ShopBrowser
             products={shopProducts}
-            categories={categories.map(({ slug, name, emoji, color, productCount }) => ({ slug, name, emoji, color, productCount }))}
+            categories={categories.map(({ slug, name, productCount }) => ({ slug, name, productCount }))}
             lowStockThreshold={settings.low_stock_threshold}
           />
         </Suspense>

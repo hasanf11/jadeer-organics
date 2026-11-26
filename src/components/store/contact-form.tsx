@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { PiCheckCircle } from "react-icons/pi";
 import { sendContactMessage } from "@/lib/actions/store";
 import type { FormState } from "@/lib/actions/newsletter";
 
@@ -10,8 +11,8 @@ export default function ContactForm() {
   if (state.ok) {
     return (
       <div role="status" className="card grid place-items-center p-10 text-center">
-        <p className="text-6xl">💌</p>
-        <p className="mt-4 text-xl font-bold">{state.message}</p>
+        <PiCheckCircle size={40} className="text-leaf" aria-hidden="true" />
+        <p className="mt-4 font-display text-xl">{state.message}</p>
       </div>
     );
   }

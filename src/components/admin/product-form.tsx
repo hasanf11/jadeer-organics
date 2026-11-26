@@ -44,7 +44,7 @@ export default function ProductForm({
 }: {
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
   values: ProductFormValues;
-  categories: { id: string; name: string; emoji: string }[];
+  categories: { id: string; name: string }[];
   isNew?: boolean;
 }) {
   const [name, setName] = useState(values.name);
@@ -60,7 +60,7 @@ export default function ProductForm({
 
       <div className="grid content-start gap-6">
         <section className="grid gap-4 rounded-3xl border border-line bg-white p-5 md:p-6">
-          <h2 className="font-display text-xl font-extrabold">Details</h2>
+          <h2 className="font-display text-xl">Details</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="field">
               <label htmlFor="p-name">Name (English)</label>
@@ -106,7 +106,7 @@ export default function ProductForm({
               <select id="p-category" name="category_id" className="input" defaultValue={values.category_id ?? ""}>
                 <option value="">— No category —</option>
                 {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>
+                  <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
             </div>
@@ -132,7 +132,7 @@ export default function ProductForm({
         </section>
 
         <section className="rounded-3xl border border-line bg-white p-5 md:p-6">
-          <h2 className="font-display text-xl font-extrabold">Labels</h2>
+          <h2 className="font-display text-xl">Labels</h2>
           <p className="mb-3 text-sm text-ink-soft">Shown on the product and used by the shop filters.</p>
           <div className="flex flex-wrap gap-2">
             {BADGE_KEYS.map((badge) => (
@@ -142,7 +142,7 @@ export default function ProductForm({
                   className="chip border-2 border-transparent px-3.5 py-2 text-sm opacity-50 transition-all peer-checked:border-current peer-checked:opacity-100 peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-sun"
                   style={{ color: BADGES[badge].color, background: BADGES[badge].bg }}
                 >
-                  {BADGES[badge].emoji} {BADGES[badge].label}
+                  {BADGES[badge].label}
                 </span>
               </label>
             ))}
@@ -151,7 +151,7 @@ export default function ProductForm({
 
         {isNew && (
           <section className="grid gap-4 rounded-3xl border border-line bg-white p-5 md:p-6">
-            <h2 className="font-display text-xl font-extrabold">First size</h2>
+            <h2 className="font-display text-xl">First size</h2>
             <p className="-mt-2 text-sm text-ink-soft">You can add more sizes after saving.</p>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="field">
@@ -173,17 +173,17 @@ export default function ProductForm({
 
       <div className="grid content-start gap-6">
         <section className="grid gap-4 rounded-3xl border border-line bg-white p-5 md:p-6">
-          <h2 className="font-display text-xl font-extrabold">Visibility</h2>
+          <h2 className="font-display text-xl">Visibility</h2>
           <div className="field">
             <label htmlFor="p-status">Status</label>
             <select id="p-status" name="status" className="input" defaultValue={values.status}>
-              <option value="published">🟢 Published — visible in the shop</option>
-              <option value="draft">🟡 Draft — hidden</option>
-              <option value="archived">⚪ Archived</option>
+              <option value="published"> Published — visible in the shop</option>
+              <option value="draft"> Draft — hidden</option>
+              <option value="archived"> Archived</option>
             </select>
           </div>
           <label className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl bg-cream p-3 font-semibold">
-            ⭐ Show in “Bestsellers” on the home page
+            Show in “Bestsellers” on the home page
             <input type="checkbox" name="is_featured" defaultChecked={values.is_featured} className="size-5 accent-[var(--color-leaf)]" />
           </label>
           <div className="field">
@@ -194,7 +194,7 @@ export default function ProductForm({
         </section>
 
         <section className="grid gap-4 rounded-3xl border border-line bg-white p-5 md:p-6">
-          <h2 className="font-display text-xl font-extrabold">Illustration</h2>
+          <h2 className="font-display text-xl">Illustration</h2>
           <p className="-mt-2 text-sm text-ink-soft">Used whenever the product has no photo.</p>
           <div className="mx-auto w-44 overflow-hidden rounded-2xl">
             <ProductArt shape={shape} color={color} background={background} name={name || "Product"} />

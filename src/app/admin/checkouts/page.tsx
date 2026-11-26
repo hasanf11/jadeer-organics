@@ -28,17 +28,17 @@ export default async function CheckoutsPage() {
         description="People who typed their phone number at checkout but didn't place the order (after 30 minutes). A friendly WhatsApp often saves the sale."
       />
       {leads.length === 0 ? (
-        <Empty emoji="🛒" title="No unfinished checkouts" text="Nice — everyone who started checking out finished." />
+        <Empty title="No unfinished checkouts" text="Nice — everyone who started checking out finished." />
       ) : (
         <ul className="grid gap-3 lg:grid-cols-2">
           {leads.map((l) => {
             const first = l.name.split(" ")[0] || "there";
-            const message = `Hi ${first}, this is Ja'deer Organics 🌿 We noticed you didn't finish your order (${l.items.map((i) => i.name).join(", ")}). Can we help you complete it? We can take it right here on WhatsApp 😊`;
+            const message = `Hi ${first}, this is Ja'deer Organics We noticed you didn't finish your order (${l.items.map((i) => i.name).join(", ")}). Can we help you complete it? We can take it right here on WhatsApp`;
             return (
               <li key={l.id} className={`rounded-3xl border bg-white p-5 ${l.contacted_at ? "border-line opacity-70" : "border-orange/50"}`}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-bold">{l.name || "No name"} · {l.phone}</span>
-                  <span className="font-display text-xl font-extrabold">{money(l.subtotal_cents)}</span>
+                  <span className="font-display text-xl">{money(l.subtotal_cents)}</span>
                 </div>
                 <p className="text-xs text-ink-soft">{formatDateTime(l.updated_at)}{l.zone_name ? ` · ${l.zone_name}` : ""}</p>
                 <ul className="mt-3 text-sm text-ink-soft">{l.items.map((i, n) => <li key={n}>{i.quantity} × {i.name} ({i.label})</li>)}</ul>
@@ -46,7 +46,7 @@ export default async function CheckoutsPage() {
                   <a href={`https://wa.me/${l.phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" className="btn btn-sm bg-[#25d366] text-white"><PiWhatsappLogoBold /> Follow up</a>
                   <ActionForm action={markLeadContacted} className="flex gap-2">
                     <input type="hidden" name="id" value={l.id} />
-                    {!l.contacted_at && <SubmitButton name="intent" value="done" className="btn btn-ink btn-sm" pendingText="…">✓ Contacted</SubmitButton>}
+                    {!l.contacted_at && <SubmitButton name="intent" value="done" className="btn btn-ink btn-sm" pendingText="…"> Contacted</SubmitButton>}
                     <SubmitButton name="intent" value="delete" className="btn btn-soft btn-sm text-tomato" pendingText="…">Remove</SubmitButton>
                   </ActionForm>
                   {l.contacted_at && <Pill color="#23752e" bg="#e3f4d8">Contacted</Pill>}

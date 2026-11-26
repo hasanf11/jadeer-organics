@@ -26,9 +26,9 @@ export function StockAdjuster({ variantId, productId, current }: { variantId: st
       {productId && <input type="hidden" name="product_id" value={productId} />}
       <input type="hidden" name="current" value={current} />
       <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)} className="input min-h-10 py-1.5 text-sm" aria-label="Stock change">
-        <option value="received">➕ Received</option>
-        <option value="damaged">➖ Damaged / used</option>
-        <option value="set">✏️ Set count to</option>
+        <option value="received"> Received</option>
+        <option value="damaged"> Damaged / used</option>
+        <option value="set"> Set count to</option>
       </select>
       <input name="amount" type="number" min={0} max={100000} required className="input min-h-10 py-1.5 text-sm" aria-label="Quantity" placeholder={mode === "set" ? String(current) : "Qty"} />
       <SubmitButton className="btn btn-ink btn-sm" pendingText="…">OK</SubmitButton>

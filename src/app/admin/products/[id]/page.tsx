@@ -39,7 +39,7 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
       <div>
         <Link href="/admin/products" className="inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-ink"><PiArrowLeftBold /> Products</Link>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="font-display text-3xl font-extrabold md:text-4xl">{product.name}</h1>
+          <h1 className="font-display text-3xl md:text-4xl">{product.name}</h1>
           <div className="flex flex-wrap gap-2">
             {product.status === "published" && (
               <Link href={`/products/${product.slug}`} target="_blank" className="btn btn-soft btn-sm">View in shop <PiArrowUpRightBold /></Link>

@@ -13,7 +13,7 @@ function Section({ title, text, children }: { title: string; text?: string; chil
   return (
     <section className="grid gap-4 rounded-3xl border border-line bg-white p-5 md:p-6">
       <div>
-        <h2 className="font-display text-xl font-extrabold">{title}</h2>
+        <h2 className="font-display text-xl">{title}</h2>
         {text && <p className="text-sm text-ink-soft">{text}</p>}
       </div>
       {children}

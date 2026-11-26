@@ -33,7 +33,7 @@ export async function requestStockAlert(_prev: FormState, formData: FormData): P
     return { ok: false, message: "Something went wrong. Please try again." };
   }
 
-  return { ok: true, message: "Done! We'll send you a WhatsApp message as soon as it's back 🌿" };
+  return { ok: true, message: "Done — we'll send you a WhatsApp message as soon as it's back." };
 }
 
 const reviewSchema = z.object({
@@ -75,7 +75,7 @@ export async function submitReview(_prev: FormState, formData: FormData): Promis
     return { ok: false, message: "Something went wrong. Please try again." };
   }
 
-  return { ok: true, message: "Thank you! Your review will appear once it's approved 💚" };
+  return { ok: true, message: "Thank you! Your review will appear once it's approved." };
 }
 
 const contactSchema = z.object({
@@ -128,5 +128,5 @@ export async function sendContactMessage(_prev: FormState, formData: FormData): 
     return { ok: false, message: "Something went wrong. Please try again." };
   }
 
-  return { ok: true, message: "Thank you! Your message has been sent — we'll reply very soon 🌿" };
+  return { ok: true, message: "Thank you — your message has been sent. We'll reply very soon." };
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PiHeart } from "react-icons/pi";
 import ProductCard, { type CardProduct } from "@/components/store/product-card";
 import { useWishlist } from "@/lib/cart";
 
@@ -12,8 +13,8 @@ export default function WishlistGrid({ products, lowStockThreshold }: { products
 
   if (saved.length === 0) {
     return (
-      <div className="mt-8 rounded-[2rem] bg-white p-10 text-center">
-        <p className="text-6xl">🤍</p>
+      <div className="mt-8 rounded-3xl border border-line bg-paper p-12 text-center">
+        <PiHeart size={32} className="mx-auto text-ink-soft" aria-hidden="true" />
         <h2 className="mt-4 text-2xl">Nothing saved yet</h2>
         <p className="mt-1 text-ink-soft">Tap the heart on any product to save it for later.</p>
         <Link href="/shop" className="btn btn-primary mt-6">Discover products</Link>
@@ -22,7 +23,7 @@ export default function WishlistGrid({ products, lowStockThreshold }: { products
   }
 
   return (
-    <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+    <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4">
       {saved.map((product) => (
         <ProductCard key={product.id} product={product} lowStockThreshold={lowStockThreshold} />
       ))}

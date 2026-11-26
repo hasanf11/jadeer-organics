@@ -53,7 +53,7 @@ export default async function DeliveryPage() {
         ))}
       </div>
       <section className="mt-6 rounded-3xl border-2 border-dashed border-leaf/40 bg-mint/30 p-5">
-        <h2 className="mb-3 font-display text-xl font-extrabold">Add an area</h2>
+        <h2 className="mb-3 font-display text-xl">Add an area</h2>
         <ActionForm action={saveZone} className={grid} resetOnSuccess>
           <ZoneFields />
           <SubmitButton className="btn btn-primary btn-sm">Add</SubmitButton>

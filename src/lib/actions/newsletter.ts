@@ -11,7 +11,7 @@ const schema = z.object({
 });
 
 export async function subscribeNewsletter(_prev: FormState, formData: FormData): Promise<FormState> {
-  if (isBot(formData)) return { ok: true, message: "Thank you! You're on the list 🌿" };
+  if (isBot(formData)) return { ok: true, message: "Thank you! You're on the list." };
 
   const parsed = schema.safeParse({ email: formData.get("email") });
   if (!parsed.success) return { ok: false, message: "Please enter a valid email address." };
@@ -30,5 +30,5 @@ export async function subscribeNewsletter(_prev: FormState, formData: FormData):
     return { ok: false, message: "Something went wrong. Please try again." };
   }
 
-  return { ok: true, message: "Thank you! You're on the list 🌿" };
+  return { ok: true, message: "Thank you! You're on the list." };
 }

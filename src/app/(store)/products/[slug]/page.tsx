@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { PiStarFill } from "react-icons/pi";
+import { PiCheck, PiStarFill } from "react-icons/pi";
 import { getProductReviews, getStorefront, toCardProduct } from "@/lib/catalog";
 import { BADGES } from "@/lib/badges";
 import { formatDate } from "@/lib/format";
@@ -48,9 +48,9 @@ async function Reviews({ productId, productName }: { productId: string; productN
   const average = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   return (
-    <section id="reviews" aria-labelledby="reviews-title" className="container-x mt-20 grid gap-8 lg:grid-cols-[1fr_1.2fr]">
+    <section id="reviews" aria-labelledby="reviews-title" className="container-x mt-28 grid gap-12 border-t border-line pt-16 lg:grid-cols-[1fr_1.2fr]">
       <div>
-        <p className="eyebrow">Real people, real food</p>
+        <p className="eyebrow">From our customers</p>
         <h2 id="reviews-title" className="display-lg mt-2">Reviews</h2>
         {reviews.length > 0 ? (
           <p className="mt-3 flex items-center gap-2 text-lg font-bold">
@@ -65,10 +65,10 @@ async function Reviews({ productId, productName }: { productId: string; productN
       </div>
       <ul className="grid content-start gap-3">
         {reviews.map((review) => (
-          <li key={review.id} className="rounded-[1.5rem] bg-white p-5">
+          <li key={review.id} className="border-b border-line pb-6">
             <div className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-full bg-butter font-bold">{review.author_name.charAt(0).toUpperCase()}</span>
+                <span className="grid size-10 place-items-center rounded-full bg-sand font-display text-lg">{review.author_name.charAt(0).toUpperCase()}</span>
                 <span>
                   <span className="block font-bold">{review.author_name}</span>
                   <span className="text-xs text-ink-soft">{formatDate(review.created_at)}</span>
@@ -132,7 +132,7 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
       />
 
       <div className="container-x pt-4 md:pt-8">
-        <nav aria-label="Breadcrumb" className="mb-4 truncate text-sm font-semibold text-ink-soft">
+        <nav aria-label="Breadcrumb" className="mb-6 truncate text-sm text-ink-soft">
           <Link href="/" className="hover:text-ink">Home</Link> /{" "}
           {product.categorySlug && (
             <>
@@ -151,24 +151,24 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
                 {product.categoryName}
               </Link>
             )}
-            <h1 className="mt-2 font-display text-4xl font-extrabold md:text-5xl">{product.name}</h1>
+            <h1 className="mt-3 font-display text-4xl md:text-[3.25rem]">{product.name}</h1>
             {product.nameAr && (
-              <p className="arabic mt-1 text-2xl text-brown" dir="rtl" lang="ar">{product.nameAr}</p>
+              <p className="arabic mt-2 text-xl text-ink-soft" dir="rtl" lang="ar">{product.nameAr}</p>
             )}
             {product.rating.count > 0 && (
               <a href="#reviews" className="mt-2 inline-flex items-center gap-2 text-sm font-bold hover:underline">
                 <Stars value={product.rating.average} /> {product.rating.average.toFixed(1)} ({product.rating.count})
               </a>
             )}
-            {product.tagline && <p className="mt-3 text-lg text-ink-soft">{product.tagline}</p>}
+            {product.tagline && <p className="serif-italic mt-4 text-xl text-ink-soft">{product.tagline}</p>}
 
-            <div className="mt-4 flex flex-wrap gap-1.5">
+            <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-y border-line py-3 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
               {product.badges.map((badge) => (
-                <span key={badge} className="chip" style={{ color: BADGES[badge].color, background: BADGES[badge].bg }}>
-                  {BADGES[badge].emoji} {BADGES[badge].label}
-                </span>
+                <li key={badge} className="flex items-center gap-1.5">
+                  <PiCheck className="text-leaf" aria-hidden="true" /> {BADGES[badge].label}
+                </li>
               ))}
-            </div>
+            </ul>
 
             <div className="mt-6">
               <ProductPurchase
@@ -179,14 +179,14 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
               />
             </div>
 
-            <div className="mt-8 divide-y divide-line rounded-[1.5rem] border border-line bg-paper">
+            <div className="mt-10 divide-y divide-line border-y border-line">
               {details.map((detail) => (
-                <details key={detail.title} open={detail.open} className="group px-5">
-                  <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-lg font-extrabold [&::-webkit-details-marker]:hidden">
+                <details key={detail.title} open={detail.open} className="group">
+                  <summary className="flex cursor-pointer list-none items-center justify-between py-5 font-display text-xl [&::-webkit-details-marker]:hidden">
                     {detail.title}
-                    <span className="grid size-8 place-items-center rounded-full bg-cream text-xl transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                    <span className="text-2xl font-light text-ink-soft transition-transform duration-300 group-open:rotate-45" aria-hidden="true">+</span>
                   </summary>
-                  <p className="whitespace-pre-line pb-5 text-ink-soft">{detail.body}</p>
+                  <p className="whitespace-pre-line pb-6 leading-relaxed text-ink-soft">{detail.body}</p>
                 </details>
               ))}
             </div>
@@ -199,9 +199,10 @@ async function ProductContent({ params }: { params: PageProps<"/products/[slug]"
       </Suspense>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="container-x mt-20">
-          <h2 id="related-title" className="display-lg">You might also love</h2>
-          <div className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-4">
+        <section aria-labelledby="related-title" className="container-x mt-28">
+          <p className="eyebrow">Pairs well with</p>
+          <h2 id="related-title" className="display-lg mt-3">You may also like</h2>
+          <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={toCardProduct(p)} lowStockThreshold={settings.low_stock_threshold} />
             ))}

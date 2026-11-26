@@ -104,8 +104,8 @@ export default async function DashboardPage({ searchParams }: PageProps<"/admin"
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Your shop today</p>
-          <h1 className="mt-1 font-display text-3xl font-extrabold md:text-4xl">
-            {greeting}, {admin.displayName} 🌿
+          <h1 className="mt-1 font-display text-3xl md:text-4xl">
+            {greeting}, {admin.displayName}
           </h1>
         </div>
         <nav aria-label="Period" className="flex rounded-full bg-white p-1 shadow-soft">
@@ -129,7 +129,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/admin"
               <Icon size={22} />
             </span>
             <span className="min-w-0">
-              <span className="block font-display text-2xl font-extrabold leading-none">{count}</span>
+              <span className="block font-display text-2xl leading-none">{count}</span>
               <span className="block text-xs font-semibold leading-tight text-ink-soft">{label}</span>
             </span>
           </Link>
@@ -145,7 +145,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/admin"
               <div key={label} className={`relative overflow-hidden rounded-2xl p-4 ${bg} ${fg}`}>
                 <Icon size={56} className="absolute -bottom-2 -right-2 opacity-15" aria-hidden="true" />
                 <p className="text-xs font-bold uppercase tracking-wider opacity-80">{label}</p>
-                <p className="mt-1 truncate font-display text-2xl font-extrabold">{value}</p>
+                <p className="mt-1 truncate font-display text-2xl">{value}</p>
                 <p className="text-xs opacity-75">Last {days} days</p>
               </div>
             ))}
@@ -199,7 +199,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/admin"
               actions={<Link href="/admin/orders" className="text-sm font-bold text-leaf hover:underline">All orders →</Link>}
             >
               {(recent.data ?? []).length === 0 ? (
-                <p className="text-ink-soft">No orders yet. Share your shop link on Instagram! 📣</p>
+                <p className="text-ink-soft">No orders yet. Share your shop link on Instagram!</p>
               ) : (
                 <ul className="divide-y divide-line">
                   {(recent.data ?? []).map((o) => (
@@ -247,7 +247,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/admin"
         actions={<Link href="/admin/inventory" className="text-sm font-bold text-leaf hover:underline">Inventory →</Link>}
       >
         {lowStock.length === 0 ? (
-          <p className="text-ink-soft">Everything is well stocked 👌</p>
+          <p className="text-ink-soft">Everything is well stocked</p>
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             {lowStock.map((v) => {
@@ -259,7 +259,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/admin"
                       <span className="block truncate font-semibold">{product.name}</span>
                       <span className="text-xs text-ink-soft">{v.label}</span>
                     </span>
-                    <span className={`font-display text-xl font-extrabold ${v.stock_quantity === 0 ? "text-tomato" : ""}`}>{v.stock_quantity}</span>
+                    <span className={`font-display text-xl ${v.stock_quantity === 0 ? "text-tomato" : ""}`}>{v.stock_quantity}</span>
                   </Link>
                 </li>
               );

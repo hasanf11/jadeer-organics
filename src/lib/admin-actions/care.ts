@@ -15,7 +15,7 @@ export async function setReviewStatus(_prev: ActionState, formData: FormData): P
   if (error) return failure(dbMessage(error));
   refreshStore();
   revalidatePath("/admin/reviews");
-  return success(status === "approved" ? "Published on the product page ⭐" : status === "delete" ? "Deleted." : "Updated.");
+  return success(status === "approved" ? "Published on the product page" : status === "delete" ? "Deleted." : "Updated.");
 }
 
 export async function setMessageHandled(_prev: ActionState, formData: FormData): Promise<ActionState> {

@@ -12,14 +12,14 @@ export default function ReviewForm({ productId }: { productId: string }) {
 
   if (state.ok) {
     return (
-      <p role="status" className="rounded-[1.5rem] bg-mint p-6 text-center font-bold text-leaf-dark">
+      <p role="status" className="rounded-2xl bg-mint p-6 text-center font-semibold text-leaf-dark">
         {state.message}
       </p>
     );
   }
 
   return (
-    <form action={action} className="grid gap-4 rounded-[1.5rem] bg-white p-5 md:p-6">
+    <form action={action} className="grid gap-4 rounded-2xl border border-line bg-paper p-5 md:p-6">
       <h3 className="text-xl">Write a review</h3>
       <input type="hidden" name="productId" value={productId} />
       <input type="hidden" name="rating" value={rating || ""} />
@@ -35,9 +35,9 @@ export default function ReviewForm({ productId }: { productId: string }) {
               onPointerEnter={() => setHover(value)}
               aria-label={`${value} star${value > 1 ? "s" : ""}`}
               aria-pressed={rating === value}
-              className="transition-transform hover:scale-125 active:scale-90"
+              className="transition-transform hover:scale-110"
             >
-              <PiStarFill size={34} className={(hover || rating) >= value ? "text-sun" : "text-line"} />
+              <PiStarFill size={28} className={(hover || rating) >= value ? "text-sun" : "text-line"} />
             </button>
           ))}
         </div>

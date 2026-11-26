@@ -9,19 +9,19 @@ export const ORDER_STATUSES = [
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
-export const STATUS_INFO: Record<string, { label: string; customer: string; emoji: string; color: string; bg: string }> = {
-  pending: { label: "New", customer: "Order received", emoji: "📝", color: "#8a5a00", bg: "#fff0b8" },
-  confirmed: { label: "Confirmed", customer: "Confirmed", emoji: "✅", color: "#0b6e70", bg: "#d8f2f0" },
-  preparing: { label: "Preparing", customer: "Being prepared", emoji: "🧺", color: "#5b21b6", bg: "#ede4ff" },
-  out_for_delivery: { label: "Out for delivery", customer: "On its way", emoji: "🚚", color: "#b0390a", bg: "#ffe6d5" },
-  delivered: { label: "Delivered", customer: "Delivered", emoji: "🎉", color: "#23752e", bg: "#e3f4d8" },
-  cancelled: { label: "Cancelled", customer: "Cancelled", emoji: "✖️", color: "#a91b1b", bg: "#fde4e4" },
+export const STATUS_INFO: Record<string, { label: string; customer: string; color: string; bg: string }> = {
+  pending: { label: "New", customer: "Order received", color: "#7a5a1d", bg: "#f4ecd6" },
+  confirmed: { label: "Confirmed", customer: "Confirmed", color: "#2d6764", bg: "#e0ecea" },
+  preparing: { label: "Preparing", customer: "Being prepared", color: "#4b3f7a", bg: "#e9e6f2" },
+  out_for_delivery: { label: "Out for delivery", customer: "On its way", color: "#8f4426", bg: "#f5e7df" },
+  delivered: { label: "Delivered", customer: "Delivered", color: "#2e5e35", bg: "#e6eee0" },
+  cancelled: { label: "Cancelled", customer: "Cancelled", color: "#8a2f2f", bg: "#f4e4e2" },
 };
 
 export const PAYMENT_INFO: Record<string, { label: string; color: string; bg: string }> = {
-  unpaid: { label: "Unpaid", color: "#8a5a00", bg: "#fff0b8" },
-  paid: { label: "Paid", color: "#23752e", bg: "#e3f4d8" },
-  refunded: { label: "Refunded", color: "#5b4a43", bg: "#efe6da" },
+  unpaid: { label: "Unpaid", color: "#7a5a1d", bg: "#f4ecd6" },
+  paid: { label: "Paid", color: "#2e5e35", bg: "#e6eee0" },
+  refunded: { label: "Refunded", color: "#5d6259", bg: "#ece8e0" },
 };
 
 /** The happy path shown to customers as a progress tracker. */

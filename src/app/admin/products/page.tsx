@@ -54,7 +54,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
         </div>
         <select name="category" defaultValue={category} className="input w-auto rounded-full" aria-label="Category">
           <option value="">All categories</option>
-          {(categories ?? []).map((c) => <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>)}
+          {(categories ?? []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <select name="status" defaultValue={status} className="input w-auto rounded-full" aria-label="Status">
           <option value="">Any status</option>
@@ -66,7 +66,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
       </form>
 
       {!products?.length ? (
-        <Empty emoji="📦" title="No products found" text="Try another search, or add a new product." />
+        <Empty title="No products found" text="Try another search, or add a new product." />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {products.map((p) => {
@@ -86,7 +86,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
                       <span className="truncate font-bold">{p.name}</span>
                       {p.is_featured && <PiStarFill className="shrink-0 text-sun" aria-label="Featured" />}
                     </span>
-                    <span className="block truncate text-xs text-ink-soft">{cat ? `${cat.emoji} ${cat.name}` : "No category"}</span>
+                    <span className="block truncate text-xs text-ink-soft">{cat ? cat.name : "No category"}</span>
                     <span className="mt-1 block text-sm font-semibold">
                       {prices.length ? (Math.min(...prices) === Math.max(...prices) ? shortMoney(prices[0]) : `${shortMoney(Math.min(...prices))} – ${shortMoney(Math.max(...prices))}`) : "No sizes yet"}
                       <span className="text-ink-soft"> · {variants.length} size{variants.length === 1 ? "" : "s"}</span>

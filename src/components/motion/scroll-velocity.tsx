@@ -12,7 +12,7 @@ export default function ScrollVelocity({
   reverse = false,
   className = "",
   itemClassName = "",
-  separator = "✦",
+  separator = "·",
 }: {
   items: ReactNode[];
   speed?: number;
@@ -54,7 +54,7 @@ export default function ScrollVelocity({
   const sequence = items.map((item, index) => (
     <span key={index} className={`inline-flex items-center gap-6 pr-6 ${itemClassName}`}>
       {item}
-      <span aria-hidden="true" className="opacity-60">{separator}</span>
+      <span aria-hidden="true" className="opacity-70">{separator}</span>
     </span>
   ));
 

@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useState } from "react";
 import {
   PiBellRingingBold,
-  PiCheckBold,
-  PiHandCoinsBold,
+    PiHandCoinsBold,
   PiHeartBold,
   PiHeartFill,
   PiShareNetworkBold,
@@ -29,9 +28,9 @@ function StockAlertForm({ variant }: { variant: Variant }) {
   }
 
   return (
-    <form action={action} className="rounded-2xl border-2 border-dashed border-berry/40 bg-blush p-4">
-      <p className="flex items-center gap-2 font-bold text-berry">
-        <PiBellRingingBold size={20} /> {variant.label} is sold out — get a WhatsApp when it&apos;s back
+    <form action={action} className="rounded-2xl border border-line bg-paper p-5">
+      <p className="flex items-center gap-2 font-semibold">
+        <PiBellRingingBold size={19} className="text-leaf" /> {variant.label} is sold out — get a WhatsApp when it&apos;s back
       </p>
       <input type="hidden" name="variantId" value={variant.id} />
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp-field" aria-hidden="true" />
@@ -105,7 +104,7 @@ export default function ProductPurchase({
         await navigator.share({ title: name, text: `${name} — Ja'deer Organics`, url });
       } else {
         await navigator.clipboard.writeText(url);
-        setMessage({ ok: true, text: "Link copied — share it with someone you love 💚" });
+        setMessage({ ok: true, text: "Link copied to your clipboard." });
       }
     } catch {
       /* cancelled */
@@ -115,7 +114,7 @@ export default function ProductPurchase({
   return (
     <div>
       <div className="flex items-end gap-3">
-        <span className="font-display text-4xl font-extrabold text-leaf">{money(variant.price)}</span>
+        <span className="font-display text-4xl">{money(variant.price)}</span>
         {variant.compareAt && variant.compareAt > variant.price && (
           <>
             <span className="pb-1 text-lg text-ink-soft line-through">{money(variant.compareAt)}</span>
@@ -127,8 +126,8 @@ export default function ProductPurchase({
       </div>
 
       <fieldset className="mt-6">
-        <legend className="mb-2 font-bold">
-          Size: <span className="text-leaf">{variant.label}</span>
+        <legend className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-ink-soft">
+          Size — <span className="text-ink">{variant.label}</span>
         </legend>
         <div className="flex flex-wrap gap-2">
           {variants.map((v) => {
@@ -136,9 +135,9 @@ export default function ProductPurchase({
             return (
               <label
                 key={v.id}
-                className={`relative cursor-pointer rounded-2xl border-[3px] px-4 py-2.5 text-center transition-all has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun ${
-                  selected ? "border-leaf bg-mint" : "border-line bg-white hover:border-ink"
-                } ${v.stock < 1 ? "opacity-60" : ""}`}
+                className={`relative min-w-24 cursor-pointer rounded-xl border px-4 py-2.5 text-center transition-all has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-leaf ${
+                  selected ? "border-ink bg-paper shadow-[inset_0_0_0_1px_var(--color-ink)]" : "border-line bg-paper hover:border-ink"
+                } ${v.stock < 1 ? "opacity-50" : ""}`}
               >
                 <input
                   type="radio"
@@ -152,13 +151,8 @@ export default function ProductPurchase({
                   }}
                   className="sr-only"
                 />
-                <span className="block font-bold">{v.label}</span>
+                <span className="block font-semibold">{v.label}</span>
                 <span className="block text-sm text-ink-soft">{v.stock < 1 ? "Sold out" : shortMoney(v.price)}</span>
-                {selected && (
-                  <span className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full bg-leaf text-white">
-                    <PiCheckBold size={13} />
-                  </span>
-                )}
               </label>
             );
           })}
@@ -166,8 +160,8 @@ export default function ProductPurchase({
       </fieldset>
 
       {lowStock && (
-        <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-butter px-3 py-1 text-sm font-bold text-[#8a5a00]">
-          <span className="size-2 animate-pulse rounded-full bg-orange" /> Hurry — only {variant.stock} left
+        <p className="mt-4 flex items-center gap-2 text-sm font-semibold text-tomato">
+          <span className="size-1.5 rounded-full bg-tomato" /> Only {variant.stock} left in stock
         </p>
       )}
 
@@ -178,12 +172,12 @@ export default function ProductPurchase({
           <div className="grid gap-3">
             <div className="flex gap-3">
               <QuantityStepper value={quantity} max={maxQty} onChange={setQuantity} label={name} />
-              <button type="button" onClick={() => add()} className="btn btn-primary flex-1 text-lg" disabled={inBag >= variant.stock}>
-                <PiShoppingBagOpenBold size={22} /> Add to bag
+              <button type="button" onClick={() => add()} className="btn btn-primary min-h-12 flex-1" disabled={inBag >= variant.stock}>
+                <PiShoppingBagOpenBold size={19} /> Add to bag
               </button>
             </div>
-            <button type="button" onClick={() => add(true)} className="btn btn-tomato w-full text-lg" disabled={inBag >= variant.stock}>
-              Buy now · pay on delivery
+            <button type="button" onClick={() => add(true)} className="btn btn-ghost min-h-12 w-full" disabled={inBag >= variant.stock}>
+              Buy now — pay on delivery
             </button>
             {inBag >= variant.stock && (
               <p className="text-sm font-bold text-ink-soft">You already have all available stock of this size in your bag.</p>
@@ -195,7 +189,7 @@ export default function ProductPurchase({
       {message && (
         <div
           role={message.ok ? "status" : "alert"}
-          className={`mt-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl p-3 text-sm font-bold ${
+          className={`mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl p-3 text-sm font-semibold ${
             message.ok ? "bg-mint text-leaf-dark" : "bg-tomato/10 text-tomato"
           }`}
         >
@@ -208,30 +202,25 @@ export default function ProductPurchase({
         </div>
       )}
 
-      <div className="mt-5 flex gap-2">
-        <button
-          type="button"
-          onClick={() => toggleWishlist(productId)}
-          aria-pressed={saved}
-          className={`btn btn-soft flex-1 ${saved ? "text-berry" : ""}`}
-        >
-          {saved ? <PiHeartFill size={20} /> : <PiHeartBold size={20} />} {saved ? "Saved" : "Save"}
+      <div className="mt-4 flex gap-6 text-sm font-semibold">
+        <button type="button" onClick={() => toggleWishlist(productId)} aria-pressed={saved} className={`flex items-center gap-2 py-2 hover:text-leaf ${saved ? "text-tomato" : "text-ink"}`}>
+          {saved ? <PiHeartFill size={18} /> : <PiHeartBold size={18} />} {saved ? "Saved to wishlist" : "Add to wishlist"}
         </button>
-        <button type="button" onClick={share} className="btn btn-soft flex-1">
-          <PiShareNetworkBold size={20} /> Share
+        <button type="button" onClick={share} className="flex items-center gap-2 py-2 hover:text-leaf">
+          <PiShareNetworkBold size={18} /> Share
         </button>
       </div>
 
-      <ul className="mt-6 grid gap-2 rounded-2xl bg-white p-4 text-sm">
+      <ul className="mt-6 grid gap-3 rounded-2xl bg-sand/60 p-5 text-sm">
         <li className="flex items-center gap-3">
-          <PiTruckBold size={22} className="shrink-0 text-leaf" />
+          <PiTruckBold size={20} className="shrink-0 text-leaf" />
           <span>
             <strong>Delivery all over Lebanon.</strong>{" "}
             {freeThreshold > 0 ? `Free on orders over ${shortMoney(freeThreshold)}.` : ""}
           </span>
         </li>
         <li className="flex items-center gap-3">
-          <PiHandCoinsBold size={22} className="shrink-0 text-tomato" />
+          <PiHandCoinsBold size={20} className="shrink-0 text-leaf" />
           <span>
             <strong>Cash on delivery.</strong> No card, no account needed.
           </span>

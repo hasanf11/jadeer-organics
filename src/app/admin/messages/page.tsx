@@ -36,7 +36,7 @@ export default async function MessagesPage({ searchParams }: PageProps<"/admin/m
         <Link href="/admin/messages?tab=done" className={`chip border-2 px-4 py-2 text-sm ${done ? "border-ink bg-ink text-cream" : "border-line bg-white"}`}>Handled</Link>
       </nav>
       {!data?.length ? (
-        <Empty emoji="💌" title={done ? "No handled messages" : "Inbox zero 🎉"} />
+        <Empty title={done ? "No handled messages" : "Inbox zero"} />
       ) : (
         <ul className="grid gap-3 lg:grid-cols-2">
           {data.map((m) => (
@@ -49,14 +49,14 @@ export default async function MessagesPage({ searchParams }: PageProps<"/admin/m
               <p className="mt-3 whitespace-pre-line">{m.message}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {m.phone && (
-                  <a href={`https://wa.me/${m.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi ${m.name.split(" ")[0]}, this is Ja'deer Organics 🌿 Thank you for your message!`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-sm bg-[#25d366] text-white">
+                  <a href={`https://wa.me/${m.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi ${m.name.split(" ")[0]}, this is Ja'deer Organics Thank you for your message!`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-sm bg-[#25d366] text-white">
                     <PiWhatsappLogoBold /> WhatsApp
                   </a>
                 )}
                 {m.email && <a href={`mailto:${m.email}?subject=${encodeURIComponent("Your message to Ja'deer Organics")}`} className="btn btn-soft btn-sm"><PiEnvelopeSimpleBold /> Email</a>}
                 <ActionForm action={setMessageHandled} className="flex gap-2">
                   <input type="hidden" name="id" value={m.id} />
-                  <SubmitButton name="intent" value={done ? "reopen" : "done"} className="btn btn-ink btn-sm" pendingText="…">{done ? "Mark as new" : "✓ Mark handled"}</SubmitButton>
+                  <SubmitButton name="intent" value={done ? "reopen" : "done"} className="btn btn-ink btn-sm" pendingText="…">{done ? "Mark as new" : " Mark handled"}</SubmitButton>
                   <SubmitButton name="intent" value="delete" className="btn btn-soft btn-sm text-tomato" pendingText="…">Delete</SubmitButton>
                 </ActionForm>
               </div>

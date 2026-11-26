@@ -15,8 +15,7 @@ function CategoryFields({ c }: { c?: Category }) {
   return (
     <>
       {c && <input type="hidden" name="id" value={c.id} />}
-      <div className="grid gap-3 sm:grid-cols-[5rem_1fr_1fr]">
-        <label className="field"><span className="field-label">Emoji</span><input name="emoji" defaultValue={c?.emoji ?? "🌿"} className="input text-center text-2xl" maxLength={8} /></label>
+      <div className="grid gap-3 sm:grid-cols-2">
         <label className="field"><span className="field-label">Name</span><input name="name" defaultValue={c?.name} className="input" required maxLength={80} /></label>
         <label className="field"><span className="field-label">Arabic name</span><input name="name_ar" defaultValue={c?.name_ar} className="input text-right" dir="rtl" maxLength={80} /></label>
       </div>
@@ -44,7 +43,7 @@ export default async function CategoriesPage() {
         {categories.map((c) => (
           <details key={c.id} className="group rounded-3xl border border-line bg-white" style={{ borderLeft: `8px solid ${c.color}` }}>
             <summary className="flex cursor-pointer list-none items-center gap-3 p-4 [&::-webkit-details-marker]:hidden">
-              <span className="text-3xl">{c.emoji}</span>
+              <span className="size-3 shrink-0 rounded-full" style={{ background: c.color }} />
               <span className="flex-1">
                 <span className="block font-bold">{c.name} {!c.is_active && <span className="text-xs text-ink-soft">(hidden)</span>}</span>
                 <span className="text-sm text-ink-soft">{c.products[0]?.count ?? 0} products · /category/{c.slug}</span>
@@ -66,7 +65,7 @@ export default async function CategoriesPage() {
         ))}
       </div>
       <section className="mt-6 rounded-3xl border-2 border-dashed border-leaf/40 bg-mint/30 p-5">
-        <h2 className="mb-3 font-display text-xl font-extrabold">Add a category</h2>
+        <h2 className="mb-3 font-display text-xl">Add a category</h2>
         <ActionForm action={saveCategory} className="grid gap-3" resetOnSuccess>
           <CategoryFields />
           <SubmitButton className="btn btn-primary justify-self-start">Add category</SubmitButton>

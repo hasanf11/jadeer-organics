@@ -1,23 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, DM_Sans, Lalezar } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans_Arabic, Manrope } from "next/font/google";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_SLOGAN, siteUrlOrLocal, searchIndexingEnabled } from "@/lib/site";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
+const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
+  axes: ["opsz", "SOFT"],
+  style: ["normal", "italic"],
 });
 
-const body = DM_Sans({
+const body = Manrope({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
 });
 
-const arabic = Lalezar({
-  subsets: ["arabic", "latin"],
-  weight: "400",
+const arabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600"],
   variable: "--font-arabic",
   display: "swap",
 });
@@ -67,7 +69,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbf6ea",
+  themeColor: "#f8f5ee",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,

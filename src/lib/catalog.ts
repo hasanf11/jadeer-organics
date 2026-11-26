@@ -44,6 +44,7 @@ export type Category = {
   description: string;
   color: string;
   emoji: string;
+  image: string | null;
   productCount: number;
 };
 
@@ -156,7 +157,7 @@ export async function getStorefront(): Promise<Storefront> {
       supabase.from("store_settings").select("*").eq("id", 1).maybeSingle(),
       supabase
         .from("categories")
-        .select("id, slug, name, name_ar, description, color, emoji, sort_order")
+        .select("id, slug, name, name_ar, description, color, emoji, image_path, sort_order")
         .order("sort_order")
         .order("name"),
       supabase
@@ -252,6 +253,11 @@ export async function getStorefront(): Promise<Storefront> {
       description: c.description,
       color: c.color,
       emoji: c.emoji,
+      image:
+        c.image_path ??
+        sellable.find((p) => p.categoryId === c.id && p.featured && p.images[0])?.images[0]?.path ??
+        sellable.find((p) => p.categoryId === c.id && p.images[0])?.images[0]?.path ??
+        null,
       productCount: sellable.filter((p) => p.categoryId === c.id).length,
     })),
     products: sellable,

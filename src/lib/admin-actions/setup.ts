@@ -44,8 +44,7 @@ export async function saveCategory(_prev: ActionState, formData: FormData): Prom
     slug: slugify(text(formData, "slug", 90) || name),
     description: text(formData, "description", 1000),
     color: HEX.test(color) ? color : "#2f8f3a",
-    emoji: text(formData, "emoji", 8) || "🌿",
-    is_active: checkbox(formData, "is_active"),
+        is_active: checkbox(formData, "is_active"),
     sort_order: Math.max(0, int(formData, "sort_order")),
   }, "category");
 }

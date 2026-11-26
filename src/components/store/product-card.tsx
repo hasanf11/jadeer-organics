@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { PiCheckBold, PiHeartBold, PiHeartFill, PiPlusBold, PiStarFill } from "react-icons/pi";
+import { PiCheckBold, PiHeart, PiHeartFill, PiPlusBold, PiStarFill } from "react-icons/pi";
 import ProductVisual from "@/components/product-visual";
 import { BADGES } from "@/lib/badges";
 import { addToCart, toggleWishlist, useWishlist } from "@/lib/cart";
@@ -46,6 +46,7 @@ export default function ProductCard({
   const onSale = product.variants.some((v) => v.compareAt && v.compareAt > v.price);
   const totalStock = product.variants.reduce((sum, v) => sum + v.stock, 0);
   const lowStock = !soldOut && totalStock <= lowStockThreshold;
+  const tag = soldOut ? "Sold out" : onSale ? "Sale" : lowStock ? `Only ${totalStock} left` : product.badges.includes("bestseller") ? "Bestseller" : product.badges.includes("new") ? "New" : null;
 
   function add(variantId: string, stock: number) {
     try {
@@ -61,12 +62,11 @@ export default function ProductCard({
     }
   }
 
+  const labels = product.badges.filter((b) => b !== "bestseller" && b !== "new").slice(0, 2);
+
   return (
     <article className="group relative flex h-full flex-col">
-      <div
-        className="relative overflow-hidden rounded-[1.6rem] transition-shadow duration-300 group-hover:shadow-pop"
-        style={{ background: product.art.background }}
-      >
+      <div className="relative overflow-hidden rounded-2xl bg-sand">
         <Link href={`/products/${product.slug}`} aria-label={product.name} className="block">
           <div ref={imageRef} className="relative aspect-[4/5] overflow-hidden">
             <ProductVisual
@@ -74,34 +74,32 @@ export default function ProductCard({
               alt={product.name}
               art={product.art}
               priority={priority}
-              className="transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+              className="transition-transform duration-[1.2s] ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-[1.04]"
             />
           </div>
         </Link>
 
-        <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
-          {soldOut && <span className="chip bg-ink text-cream">Sold out</span>}
-          {!soldOut && onSale && <span className="chip bg-tomato text-white">Sale</span>}
-          {lowStock && <span className="chip bg-sun text-ink">Only {totalStock} left</span>}
-          {product.badges.includes("keto") && <span className="chip bg-teal text-white">Keto</span>}
-        </div>
+        {tag && (
+          <span className={`pointer-events-none absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.08em] ${soldOut ? "bg-ink text-cream" : onSale ? "bg-tomato text-white" : "bg-paper/95 text-ink"}`}>
+            {tag}
+          </span>
+        )}
 
         <button
           type="button"
           onClick={() => toggleWishlist(product.id)}
           aria-pressed={saved}
           aria-label={saved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
-          className={`absolute right-2.5 top-2.5 grid size-10 place-items-center rounded-full bg-white/90 shadow-soft backdrop-blur transition-transform hover:scale-110 active:scale-90 ${
-            saved ? "text-berry" : "text-ink"
-          }`}
+          className={`absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-paper/95 transition-colors hover:bg-white ${saved ? "text-tomato" : "text-ink"}`}
         >
-          {saved ? <PiHeartFill size={20} className="animate-pop" /> : <PiHeartBold size={20} />}
+          {saved ? <PiHeartFill size={17} className="animate-pop" /> : <PiHeart size={17} />}
         </button>
 
         {!soldOut && (
-          <div className="absolute inset-x-2.5 bottom-2.5">
+          <div className="absolute inset-x-3 bottom-3">
             {choosing ? (
-              <div className="animate-pop rounded-2xl bg-white/95 p-2 shadow-pop backdrop-blur" role="group" aria-label="Choose a size">
+              <div className="animate-pop rounded-xl bg-paper p-2 shadow-pop" role="group" aria-label="Choose a size">
+                <p className="px-1 pb-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-ink-soft">Choose a size</p>
                 <div className="flex flex-wrap gap-1.5">
                   {product.variants.map((variant) => (
                     <button
@@ -109,14 +107,14 @@ export default function ProductCard({
                       type="button"
                       disabled={variant.stock < 1}
                       onClick={() => add(variant.id, variant.stock)}
-                      className="flex-1 rounded-xl border-2 border-line px-2 py-1.5 text-sm font-bold transition-colors hover:border-leaf hover:bg-mint disabled:opacity-40"
+                      className="flex-1 rounded-lg border border-line px-2 py-1.5 text-sm font-semibold transition-colors hover:border-ink disabled:opacity-40"
                     >
                       {variant.label}
-                      <span className="block text-xs font-semibold text-ink-soft">{shortMoney(variant.price)}</span>
+                      <span className="block text-xs font-medium text-ink-soft">{shortMoney(variant.price)}</span>
                     </button>
                   ))}
                 </div>
-                <button type="button" onClick={() => setChoosing(false)} className="mt-1 w-full text-xs font-bold text-ink-soft">
+                <button type="button" onClick={() => setChoosing(false)} className="mt-1 w-full py-1 text-xs font-semibold text-ink-soft hover:text-ink">
                   Cancel
                 </button>
               </div>
@@ -124,13 +122,13 @@ export default function ProductCard({
               <button
                 type="button"
                 onClick={() => (inStock.length === 1 && product.variants.length === 1 ? add(inStock[0].id, inStock[0].stock) : setChoosing(true))}
-                className={`ml-auto flex h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold shadow-soft transition-all duration-300 hover:scale-105 active:scale-95 ${
-                  added ? "bg-leaf text-white" : "bg-white text-ink"
+                className={`flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold transition-all duration-300 lg:translate-y-2 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:focus-visible:translate-y-0 lg:focus-visible:opacity-100 ${
+                  added ? "bg-leaf text-white !opacity-100 !translate-y-0" : "bg-paper/95 text-ink hover:bg-ink hover:text-cream"
                 }`}
                 aria-label={`Add ${product.name} to bag`}
               >
-                {added ? <PiCheckBold size={18} /> : <PiPlusBold size={18} />}
-                <span>{added ? "Added" : "Add"}</span>
+                {added ? <PiCheckBold size={15} /> : <PiPlusBold size={15} />}
+                <span>{added ? "Added to bag" : "Add to bag"}</span>
               </button>
             )}
           </div>
@@ -138,48 +136,38 @@ export default function ProductCard({
       </div>
 
       {error && (
-        <p role="alert" className="mt-2 rounded-xl bg-tomato/10 px-3 py-1.5 text-xs font-bold text-tomato">
+        <p role="alert" className="mt-2 rounded-lg bg-tomato/10 px-3 py-1.5 text-xs font-semibold text-tomato">
           {error}
         </p>
       )}
 
-      <div className="flex flex-1 flex-col px-1 pt-3">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-sans text-[1.02rem] font-bold leading-snug tracking-normal">
-            <Link href={`/products/${product.slug}`} className="hover:text-leaf">
-              {product.name}
-            </Link>
-          </h3>
+      <div className="flex flex-1 flex-col pt-3.5">
+        {labels.length > 0 && (
+          <p className="mb-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-ink-soft">
+            {labels.map((b) => BADGES[b].label).join(" · ")}
+          </p>
+        )}
+        <h3 className="font-display text-[1.15rem] leading-snug">
+          <Link href={`/products/${product.slug}`} className="transition-colors hover:text-leaf">
+            {product.name}
+          </Link>
+        </h3>
+        <div className="mt-auto flex items-baseline justify-between gap-2 pt-1.5">
+          <p className="flex items-baseline gap-2">
+            <span className="font-semibold text-ink">
+              {product.variants.length > 1 && <span className="text-sm font-normal text-ink-soft">From </span>}
+              {shortMoney(cheapest.price)}
+            </span>
+            {cheapest.compareAt && cheapest.compareAt > cheapest.price && (
+              <span className="text-sm text-ink-soft line-through">{shortMoney(cheapest.compareAt)}</span>
+            )}
+          </p>
           {product.rating && product.rating.count > 0 && (
-            <span className="flex shrink-0 items-center gap-0.5 text-sm font-bold">
+            <span className="flex items-center gap-1 text-xs font-semibold text-ink-soft">
               <PiStarFill className="text-sun" /> {product.rating.average.toFixed(1)}
             </span>
           )}
         </div>
-        {product.nameAr && (
-          <p className="arabic text-left text-sm text-ink-soft" dir="rtl" lang="ar">
-            {product.nameAr}
-          </p>
-        )}
-        <div className="mt-1.5 flex flex-wrap gap-1">
-          {product.badges
-            .filter((b) => b !== "keto" && b !== "bestseller")
-            .slice(0, 2)
-            .map((badge) => (
-              <span key={badge} className="chip px-2 py-0.5 text-[0.68rem]" style={{ color: BADGES[badge].color, background: BADGES[badge].bg }}>
-                {BADGES[badge].label}
-              </span>
-            ))}
-        </div>
-        <p className="mt-auto flex items-baseline gap-2 pt-2">
-          <span className="text-lg font-extrabold text-ink">
-            {product.variants.length > 1 && <span className="text-sm font-semibold text-ink-soft">from </span>}
-            {shortMoney(cheapest.price)}
-          </span>
-          {cheapest.compareAt && cheapest.compareAt > cheapest.price && (
-            <span className="text-sm text-ink-soft line-through">{shortMoney(cheapest.compareAt)}</span>
-          )}
-        </p>
       </div>
     </article>
   );

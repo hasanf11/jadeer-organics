@@ -73,7 +73,7 @@ export default async function PromotionsPage() {
         })}
       </div>
       <section className="mt-6 rounded-3xl border-2 border-dashed border-leaf/40 bg-mint/30 p-5">
-        <h2 className="mb-3 font-display text-xl font-extrabold">New promo code</h2>
+        <h2 className="mb-3 font-display text-xl">New promo code</h2>
         <ActionForm action={savePromotion} className="grid gap-3" resetOnSuccess><Fields /><SubmitButton className="btn btn-primary justify-self-start">Create code</SubmitButton></ActionForm>
       </section>
     </div>

@@ -13,28 +13,28 @@ export default async function DeliveryPage() {
   return (
     <div className="container-x max-w-3xl pt-8 md:pt-14">
       <p className="eyebrow">All over Lebanon</p>
-      <h1 className="display-xl mt-2">Delivery &amp; returns</h1>
+      <h1 className="display-xl mt-4">Delivery &amp; returns</h1>
 
-      <div className="mt-8 overflow-hidden rounded-[1.5rem] bg-white">
+      <div className="mt-10 overflow-hidden rounded-2xl border border-line bg-paper">
         <table className="w-full text-left">
           <caption className="sr-only">Delivery fees by area</caption>
-          <thead className="bg-leaf text-white">
+          <thead className="bg-sand text-xs uppercase tracking-[0.14em] text-ink-soft">
             <tr><th className="p-4">Area</th><th className="p-4">Delivery time</th><th className="p-4 text-right">Fee</th></tr>
           </thead>
           <tbody>
             {zones.map((zone) => (
               <tr key={zone.id} className="border-t border-line">
-                <td className="p-4 font-bold">{zone.name}</td>
+                <td className="p-4 font-semibold">{zone.name}</td>
                 <td className="p-4 text-ink-soft">{zone.eta || "—"}</td>
-                <td className="p-4 text-right font-bold">{zone.fee_cents ? money(zone.fee_cents) : "Free"}</td>
+                <td className="p-4 text-right font-semibold">{zone.fee_cents ? money(zone.fee_cents) : "Free"}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       {settings.free_delivery_threshold_cents > 0 && (
-        <p className="mt-4 rounded-2xl bg-mint p-4 font-bold text-leaf-dark">
-          🎉 Free delivery everywhere on orders over {money(settings.free_delivery_threshold_cents)}.
+        <p className="mt-4 rounded-xl bg-mint p-4 font-semibold text-leaf-dark">
+          Free delivery everywhere on orders over {money(settings.free_delivery_threshold_cents)}.
         </p>
       )}
 

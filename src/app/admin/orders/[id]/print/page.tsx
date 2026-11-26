@@ -27,12 +27,12 @@ export default async function PrintOrderPage({ params }: PageProps<"/admin/order
         <div className="flex items-center gap-3">
           <Image src="/brand/logo-source.png" alt="" width={64} height={64} className="rounded-full" />
           <div>
-            <p className="font-display text-2xl font-extrabold">Ja&apos;deer Organics</p>
+            <p className="font-display text-2xl">Ja&apos;deer Organics</p>
             <p className="text-sm text-ink-soft">{[settings?.phone || settings?.whatsapp, settings?.email].filter(Boolean).join(" · ")}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-display text-xl font-extrabold">Order #{order.order_number}</p>
+          <p className="font-display text-xl">Order #{order.order_number}</p>
           <p className="text-sm text-ink-soft">{formatDateTime(order.created_at)}</p>
         </div>
       </header>
@@ -48,7 +48,7 @@ export default async function PrintOrderPage({ params }: PageProps<"/admin/order
           <p className="text-xs font-bold uppercase tracking-wider text-ink-soft">Payment</p>
           <p className="font-bold">Cash on delivery</p>
           <p className="mt-2 text-xs font-bold uppercase tracking-wider text-ink-soft">Amount to collect</p>
-          <p className="font-display text-3xl font-extrabold">{order.payment_status === "paid" ? "PAID" : money(order.total_cents)}</p>
+          <p className="font-display text-3xl">{order.payment_status === "paid" ? "PAID" : money(order.total_cents)}</p>
         </div>
       </section>
       <table className="w-full text-left text-sm">
@@ -71,7 +71,7 @@ export default async function PrintOrderPage({ params }: PageProps<"/admin/order
         <div className="flex justify-between border-t border-ink pt-1 text-base font-bold"><dt>Total</dt><dd>{money(order.total_cents)}</dd></div>
       </dl>
       {order.customer_notes && <p className="mt-6 rounded-xl bg-cream p-3 text-sm"><strong>Note:</strong> {order.customer_notes}</p>}
-      <p className="mt-10 text-center text-sm text-ink-soft">Thank you for choosing Ja&apos;deer Organics 💚 You deserve this way of life.</p>
+      <p className="mt-10 text-center text-sm text-ink-soft">Thank you for choosing Ja&apos;deer Organics You deserve this way of life.</p>
     </div>
   );
 }

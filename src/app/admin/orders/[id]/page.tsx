@@ -19,15 +19,16 @@ import { googleMapsUrl } from "@/lib/maps";
 import { setOrderPayment, setOrderStatus, saveOrderNotes } from "@/lib/admin-actions/orders";
 import ActionForm, { SubmitButton } from "@/components/admin/action-form";
 import { Panel, Pill } from "@/components/admin/ui";
+import StatusIcon from "@/components/status-icon";
 
 export const metadata: Metadata = { title: "Order" };
 export const instant = false;
 
 const NEXT_STEP: Record<string, { status: string; label: string }> = {
-  pending: { status: "confirmed", label: "✅ Confirm order" },
-  confirmed: { status: "preparing", label: "🧺 Start preparing" },
-  preparing: { status: "out_for_delivery", label: "🚚 Send out for delivery" },
-  out_for_delivery: { status: "delivered", label: "🎉 Mark as delivered (paid)" },
+  pending: { status: "confirmed", label: " Confirm order" },
+  confirmed: { status: "preparing", label: " Start preparing" },
+  preparing: { status: "out_for_delivery", label: " Send out for delivery" },
+  out_for_delivery: { status: "delivered", label: " Mark as delivered (paid)" },
 };
 
 export default async function OrderPage({ params }: PageProps<"/admin/orders/[id]">) {
@@ -73,11 +74,11 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
         </Link>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-3xl font-extrabold md:text-4xl">Order #{order.order_number}</h1>
+            <h1 className="font-display text-3xl md:text-4xl">Order #{order.order_number}</h1>
             <p className="text-ink-soft">Placed {formatDateTime(order.created_at)}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Pill color={status.color} bg={status.bg}>{status.emoji} {status.label}</Pill>
+            <Pill color={status.color} bg={status.bg}>{status.label}</Pill>
             <Pill color={PAYMENT_INFO[order.payment_status].color} bg={PAYMENT_INFO[order.payment_status].bg}>
               {PAYMENT_INFO[order.payment_status].label}
             </Pill>
@@ -93,7 +94,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
           {CUSTOMER_STEPS.map((step, i) => (
             <li key={step} className="text-center">
               <span className={`mx-auto grid size-10 place-items-center rounded-full text-lg ${i <= stepIndex ? "bg-mint" : "bg-cream grayscale"}`}>
-                {STATUS_INFO[step].emoji}
+                <StatusIcon status={step} size={16} />
               </span>
               <span className={`mt-1 block text-[0.7rem] font-bold md:text-xs ${i <= stepIndex ? "" : "text-ink-soft"}`}>{STATUS_INFO[step].label}</span>
             </li>
@@ -182,7 +183,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
           <Panel title="Customer">
             <p className="text-lg font-bold">{order.customer_name}</p>
             <p className="text-sm text-ink-soft">
-              {previousOrders ? `Returning customer · ${previousOrders} other order${previousOrders > 1 ? "s" : ""}` : "First order 🎉"}
+              {previousOrders ? `Returning customer · ${previousOrders} other order${previousOrders > 1 ? "s" : ""}` : "First order"}
             </p>
             <div className="mt-3 grid gap-2">
               <a href={`tel:${order.customer_phone}`} className="flex items-center gap-2 font-semibold hover:text-leaf"><PiPhoneBold /> {order.customer_phone}</a>

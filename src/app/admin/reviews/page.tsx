@@ -38,7 +38,7 @@ export default async function ReviewsPage({ searchParams }: PageProps<"/admin/re
         ))}
       </nav>
       {!data?.length ? (
-        <Empty emoji="⭐" title="Nothing here" text={tab === "pending" ? "New reviews will wait here for your approval." : undefined} />
+        <Empty title="Nothing here" text={tab === "pending" ? "New reviews will wait here for your approval." : undefined} />
       ) : (
         <ul className="grid gap-3 lg:grid-cols-2">
           {data.map((r) => {
@@ -53,7 +53,7 @@ export default async function ReviewsPage({ searchParams }: PageProps<"/admin/re
                 <p className="mt-3">{r.body}</p>
                 <ActionForm action={setReviewStatus} className="mt-4 flex flex-wrap gap-2">
                   <input type="hidden" name="id" value={r.id} />
-                  {r.status !== "approved" && <SubmitButton name="status" value="approved" className="btn btn-primary btn-sm" pendingText="…">✓ Approve</SubmitButton>}
+                  {r.status !== "approved" && <SubmitButton name="status" value="approved" className="btn btn-primary btn-sm" pendingText="…"> Approve</SubmitButton>}
                   {r.status !== "rejected" && <SubmitButton name="status" value="rejected" className="btn btn-soft btn-sm" pendingText="…">Hide</SubmitButton>}
                   <SubmitButton name="status" value="delete" className="btn btn-soft btn-sm text-tomato" pendingText="…">Delete</SubmitButton>
                 </ActionForm>

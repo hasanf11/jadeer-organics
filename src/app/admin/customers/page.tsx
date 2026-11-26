@@ -28,7 +28,7 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
         <input name="q" defaultValue={q} placeholder="Search name or phone" className="input rounded-full pl-11" aria-label="Search customers" />
       </form>
       {customers.length === 0 ? (
-        <Empty emoji="👥" title={q ? "No customers match" : "No customers yet"} />
+        <Empty title={q ? "No customers match" : "No customers yet"} />
       ) : (
         <Table>
           <thead><tr><th>Customer</th><th>Orders</th><th>Spent</th><th>Last order</th><th>Area</th><th><span className="sr-only">Actions</span></th></tr></thead>
@@ -38,8 +38,8 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
                 <td>
                   <span className="flex items-center gap-2 font-semibold">
                     {c.name}
-                    {c.orders >= 3 && <Pill color="#8a5200" bg="#fef3c7">⭐ Loyal</Pill>}
-                    {vip > 0 && c.spent_cents >= vip && c.orders > 1 && <Pill color="#a3245c" bg="#fde2ef">💎 Top</Pill>}
+                    {c.orders >= 3 && <Pill color="#8a5200" bg="#fef3c7"> Loyal</Pill>}
+                    {vip > 0 && c.spent_cents >= vip && c.orders > 1 && <Pill color="#a3245c" bg="#fde2ef"> Top</Pill>}
                   </span>
                   <span className="text-xs text-ink-soft">{c.phone}{c.email ? ` · ${c.email}` : ""}</span>
                 </td>

@@ -8,7 +8,7 @@ import { formatDateTime, money } from "@/lib/format";
 import { CUSTOMER_STEPS, STATUS_INFO } from "@/lib/order-status";
 import { hashOrderToken } from "@/lib/order-token";
 import { createServiceClient } from "@/lib/supabase/service";
-import OrderCelebration from "@/components/store/order-celebration";
+import StatusIcon from "@/components/status-icon";
 
 export const metadata: Metadata = {
   title: "Your order",
@@ -52,14 +52,10 @@ async function OrderDetails({ params }: { params: PageProps<"/order/[token]">["p
 
   return (
     <>
-      <Suspense fallback={null}>
-        <OrderCelebration />
-      </Suspense>
-
-      <div className="rounded-[2rem] bg-leaf p-6 text-white md:p-9">
-        <p className="font-bold uppercase tracking-[0.18em] text-butter">Order #{order.order_number}</p>
-        <h1 className="mt-2 font-display text-4xl font-extrabold md:text-5xl">
-          {cancelled ? "This order was cancelled" : `Thank you, ${firstName}! 💚`}
+      <div className="grain rounded-3xl bg-leaf p-7 text-cream md:p-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cream/70">Order #{order.order_number}</p>
+        <h1 className="mt-3 font-display text-4xl md:text-5xl">
+          {cancelled ? "This order was cancelled" : `Thank you, ${firstName}.`}
         </h1>
         <p className="mt-2 text-white/85">
           {cancelled
@@ -77,13 +73,13 @@ async function OrderDetails({ params }: { params: PageProps<"/order/[token]">["p
             return (
               <li key={step} className="text-center" aria-current={i === stepIndex ? "step" : undefined}>
                 <span
-                  className={`mx-auto grid size-12 place-items-center rounded-full text-xl transition-colors md:size-14 ${
-                    done ? "bg-leaf shadow-[0_0_0_4px_var(--color-mint)]" : "bg-white grayscale"
-                  } ${i === stepIndex ? "animate-pulse" : ""}`}
+                  className={`mx-auto grid size-11 place-items-center rounded-full transition-colors md:size-12 ${
+                    done ? "bg-leaf text-white" : "border border-line bg-paper text-ink-soft"
+                  }`}
                 >
-                  {info.emoji}
+                  <StatusIcon status={step} />
                 </span>
-                <span className={`mt-2 block text-[0.7rem] font-bold leading-tight md:text-sm ${done ? "text-ink" : "text-ink-soft"}`}>
+                <span className={`mt-2 block text-[0.7rem] font-semibold leading-tight md:text-sm ${done ? "text-ink" : "text-ink-soft"}`}>
                   {info.customer}
                 </span>
               </li>
@@ -113,7 +109,7 @@ async function OrderDetails({ params }: { params: PageProps<"/order/[token]">["p
           )}
           <div className="mt-2 flex items-baseline justify-between border-t border-line pt-3">
             <dt className="text-lg font-bold">Total to pay</dt>
-            <dd className="font-display text-3xl font-extrabold">{money(order.total_cents)}</dd>
+            <dd className="font-display text-3xl">{money(order.total_cents)}</dd>
           </div>
         </dl>
       </section>
@@ -142,10 +138,10 @@ async function OrderDetails({ params }: { params: PageProps<"/order/[token]">["p
       <div className="mt-6 flex flex-wrap gap-3">
         {whatsapp && (
           <a
-            href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello Ja'deer! About my order #${order.order_number} 🌿`)}`}
+            href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello Ja'deer, I have a question about my order #${order.order_number}.`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn bg-[#25d366] text-white"
+            className="btn bg-[#1f8f4e] text-white hover:bg-[#187a42]"
           >
             <PiWhatsappLogoBold size={20} /> Message us about this order
           </a>

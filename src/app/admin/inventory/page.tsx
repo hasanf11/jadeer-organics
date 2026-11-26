@@ -10,12 +10,12 @@ export const metadata: Metadata = { title: "Inventory" };
 export const instant = false;
 
 const REASONS: Record<string, string> = {
-  received: "📦 Received",
-  correction: "✏️ Count corrected",
-  damaged: "💔 Damaged / used",
-  order: "🛒 Ordered",
+  received: " Received",
+  correction: " Count corrected",
+  damaged: " Damaged / used",
+  order: " Ordered",
   order_cancelled: "↩️ Order cancelled",
-  order_reopened: "🔁 Order reopened",
+  order_reopened: " Order reopened",
 };
 
 export default async function InventoryPage({ searchParams }: PageProps<"/admin/inventory">) {
@@ -57,7 +57,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/admin/
         ].map((k) => (
           <div key={k.label} className={`rounded-2xl p-4 ${k.bg}`}>
             <p className="text-xs font-bold uppercase tracking-wider text-ink-soft">{k.label}</p>
-            <p className="font-display text-2xl font-extrabold">{k.value}</p>
+            <p className="font-display text-2xl">{k.value}</p>
           </div>
         ))}
       </div>

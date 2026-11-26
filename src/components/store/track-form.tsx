@@ -29,7 +29,7 @@ export default function TrackForm() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-2xl">Order #{state.order.number}</h2>
             <span className="chip" style={{ color: STATUS_INFO[state.order.status].color, background: STATUS_INFO[state.order.status].bg }}>
-              {STATUS_INFO[state.order.status].emoji} {STATUS_INFO[state.order.status].customer}
+              {STATUS_INFO[state.order.status].customer}
             </span>
           </div>
           <p className="mt-1 text-sm text-ink-soft">Placed {formatDateTime(state.order.createdAt)} · {state.order.zone}</p>

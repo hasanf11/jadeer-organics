@@ -28,7 +28,7 @@ export default async function StockAlertsPage() {
 
   const row = (a: Alert, isReady: boolean) => {
     const v = a.product_variants;
-    const text = `Hi ${a.name.split(" ")[0] || "there"}, this is Ja'deer Organics 🌿 Good news: ${v.products.name} (${v.label}) is back in stock! ${base ? `${base}/products/${v.products.slug}` : ""}`;
+    const text = `Hi ${a.name.split(" ")[0] || "there"}, this is Ja'deer Organics Good news: ${v.products.name} (${v.label}) is back in stock! ${base ? `${base}/products/${v.products.slug}` : ""}`;
     return (
       <li key={a.id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-white p-4">
         <span className="min-w-0 flex-1">
@@ -43,7 +43,7 @@ export default async function StockAlertsPage() {
         )}
         <ActionForm action={markAlertNotified} className="flex gap-2">
           <input type="hidden" name="id" value={a.id} />
-          {isReady && <SubmitButton name="intent" value="done" className="btn btn-ink btn-sm" pendingText="…">✓ Done</SubmitButton>}
+          {isReady && <SubmitButton name="intent" value="done" className="btn btn-ink btn-sm" pendingText="…"> Done</SubmitButton>}
           <SubmitButton name="intent" value="delete" className="btn btn-soft btn-sm text-tomato" pendingText="…">Remove</SubmitButton>
         </ActionForm>
       </li>
@@ -54,11 +54,11 @@ export default async function StockAlertsPage() {
     <div>
       <PageHeader title="Stock alerts" description="Customers who asked to be told when a sold-out size is back. Restock it, then message them in one tap." />
       {alerts.length === 0 ? (
-        <Empty emoji="🔔" title="No one is waiting" text="When a size sells out, customers can leave their number on the product page." />
+        <Empty title="No one is waiting" text="When a size sells out, customers can leave their number on the product page." />
       ) : (
         <div className="grid gap-6">
-          {ready.length > 0 && <section><h2 className="mb-3 font-display text-xl font-extrabold">✅ Ready to message ({ready.length})</h2><ul className="grid gap-2">{ready.map((a) => row(a, true))}</ul></section>}
-          {waiting.length > 0 && <section><h2 className="mb-3 font-display text-xl font-extrabold">⏳ Waiting for stock ({waiting.length})</h2><ul className="grid gap-2">{waiting.map((a) => row(a, false))}</ul></section>}
+          {ready.length > 0 && <section><h2 className="mb-3 font-display text-xl"> Ready to message ({ready.length})</h2><ul className="grid gap-2">{ready.map((a) => row(a, true))}</ul></section>}
+          {waiting.length > 0 && <section><h2 className="mb-3 font-display text-xl">⏳ Waiting for stock ({waiting.length})</h2><ul className="grid gap-2">{waiting.map((a) => row(a, false))}</ul></section>}
         </div>
       )}
     </div>

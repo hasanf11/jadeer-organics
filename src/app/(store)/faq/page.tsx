@@ -9,22 +9,21 @@ export const metadata = pageMetadata({
   path: "/faq",
 });
 
-const colors = ["bg-mint", "bg-butter", "bg-blush", "bg-sky"];
 
 export default function FaqPage() {
   return (
     <div className="container-x max-w-3xl pt-8 md:pt-14">
       <JsonLd data={faqJsonLd(FAQS)} />
       <p className="eyebrow">Good questions</p>
-      <h1 className="display-xl mt-2">FAQ</h1>
-      <div className="mt-8 grid gap-3">
+      <h1 className="display-xl mt-4">Questions &amp; answers</h1>
+      <div className="mt-10 divide-y divide-line border-y border-line">
         {FAQS.map((faq, i) => (
-          <details key={faq.q} className={`group rounded-[1.5rem] px-5 ${colors[i % colors.length]}`} open={i === 0}>
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg font-bold [&::-webkit-details-marker]:hidden">
+          <details key={faq.q} className="group" open={i === 0}>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-6 font-display text-xl [&::-webkit-details-marker]:hidden">
               {faq.q}
-              <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-xl transition-transform group-open:rotate-45">+</span>
+              <span aria-hidden="true" className="shrink-0 text-2xl font-light text-ink-soft transition-transform duration-300 group-open:rotate-45">+</span>
             </summary>
-            <p className="pb-5 text-ink-soft">{faq.a}</p>
+            <p className="max-w-2xl pb-6 leading-relaxed text-ink-soft">{faq.a}</p>
           </details>
         ))}
       </div>

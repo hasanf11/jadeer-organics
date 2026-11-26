@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PiArrowRightBold, PiTrashBold } from "react-icons/pi";
+import { PiArrowRightBold, PiShoppingBagOpenBold, PiTrashBold } from "react-icons/pi";
 import ProductVisual from "@/components/product-visual";
 import QuantityStepper from "@/components/store/quantity-stepper";
 import { FreeDeliveryMeter, useBagLines } from "@/components/store/bag-drawer";
@@ -16,9 +16,9 @@ export default function BagPage() {
   if (lines.length === 0) {
     return (
       <div className="mx-auto max-w-md py-16 text-center">
-        <div className="mx-auto grid size-28 place-items-center rounded-full bg-butter text-6xl">🧺</div>
+        <div className="mx-auto grid size-20 place-items-center rounded-full bg-sand text-ink-soft"><PiShoppingBagOpenBold size={30} /></div>
         <h1 className="mt-5 text-3xl">Your bag is empty</h1>
-        <p className="mt-2 text-ink-soft">Fill it with something good for you.</p>
+        <p className="mt-2 text-ink-soft">Discover our organic pantry essentials.</p>
         <Link href="/shop" className="btn btn-primary mt-6">Start shopping</Link>
       </div>
     );
@@ -28,14 +28,14 @@ export default function BagPage() {
     <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
       <div>
         <div className="flex items-end justify-between gap-4">
-          <h1 className="display-lg">Your bag <span className="text-leaf">({count})</span></h1>
+          <h1 className="display-lg">Your bag <span className="font-sans text-lg font-semibold text-ink-soft">({count} items)</span></h1>
           <button type="button" onClick={() => clearCart()} className="text-sm font-bold text-ink-soft hover:text-tomato">
             Empty bag
           </button>
         </div>
         <ul className="mt-6 grid gap-3">
           {lines.map(({ product, variant, quantity }) => (
-            <li key={variant.id} className="flex gap-4 rounded-[1.5rem] bg-white p-3 md:p-4">
+            <li key={variant.id} className="flex gap-4 border-b border-line pb-5">
               <Link href={`/products/${product.slug}`} className="relative block size-24 shrink-0 overflow-hidden rounded-2xl md:size-28">
                 <ProductVisual image={product.image} alt={product.name} art={product.art} sizes="112px" />
               </Link>
@@ -64,7 +64,7 @@ export default function BagPage() {
         <FreeDeliveryMeter subtotal={subtotal} />
         <div className="flex items-baseline justify-between">
           <span className="font-bold">Subtotal</span>
-          <span className="font-display text-3xl font-extrabold">{money(subtotal)}</span>
+          <span className="font-display text-3xl">{money(subtotal)}</span>
         </div>
         <p className="text-sm text-ink-soft">Delivery fee is added at checkout based on your area. Pay cash on delivery.</p>
         <Link href="/checkout" className="btn btn-primary w-full text-lg">

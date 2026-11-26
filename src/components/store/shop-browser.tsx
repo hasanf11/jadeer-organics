@@ -7,7 +7,7 @@ import ProductCard, { type CardProduct } from "@/components/store/product-card";
 import { searchProducts } from "@/components/store/search-dialog";
 import { BADGES, type BadgeKey } from "@/lib/badges";
 
-type ShopCategory = { slug: string; name: string; emoji: string; color: string; productCount: number };
+type ShopCategory = { slug: string; name: string; productCount: number };
 type ShopProduct = CardProduct & { categorySlug: string | null; featured: boolean; createdAt: string; sortOrder: number };
 
 const SORTS = [
@@ -97,31 +97,28 @@ export default function ShopBrowser({
     <div className="grid gap-7">
       {!lockedCategory && (
         <fieldset>
-          <legend className="mb-3 font-display text-lg font-extrabold">Category</legend>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => update({ category: null })}
-              className={`chip border-2 px-3.5 py-2 text-sm ${!category ? "border-ink bg-ink text-cream" : "border-line bg-white"}`}
-            >
-              All
-            </button>
-            {categories.map((c) => (
-              <button
-                key={c.slug}
-                type="button"
-                onClick={() => update({ category: category === c.slug ? null : c.slug })}
-                aria-pressed={category === c.slug}
-                className={`chip border-2 px-3.5 py-2 text-sm ${category === c.slug ? "border-ink bg-ink text-cream" : "border-line bg-white hover:border-ink"}`}
-              >
-                {c.emoji} {c.name}
-              </button>
-            ))}
+          <legend className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-ink-soft">Category</legend>
+          <div className="grid">
+            {[{ slug: "", name: "All products", productCount: products.length }, ...categories].map((c) => {
+              const on = category === c.slug;
+              return (
+                <button
+                  key={c.slug || "all"}
+                  type="button"
+                  onClick={() => update({ category: c.slug && !on ? c.slug : null })}
+                  aria-pressed={on}
+                  className={`flex items-center justify-between border-b border-line py-2.5 text-left text-[0.95rem] transition-colors ${on ? "font-semibold text-ink" : "text-ink-soft hover:text-ink"}`}
+                >
+                  <span className="flex items-center gap-2">{on && <span className="size-1.5 rounded-full bg-leaf" />}{c.name}</span>
+                  <span className="text-xs text-ink-soft">{c.productCount}</span>
+                </button>
+              );
+            })}
           </div>
         </fieldset>
       )}
       <fieldset>
-        <legend className="mb-3 font-display text-lg font-extrabold">Lifestyle</legend>
+        <legend className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-ink-soft">Dietary</legend>
         <div className="flex flex-wrap gap-2">
           {FILTER_BADGES.map((badge) => {
             const on = badges.includes(badge);
@@ -131,20 +128,15 @@ export default function ShopBrowser({
                 type="button"
                 onClick={() => toggleBadge(badge)}
                 aria-pressed={on}
-                className="chip border-2 px-3.5 py-2 text-sm transition-colors"
-                style={
-                  on
-                    ? { background: BADGES[badge].color, borderColor: BADGES[badge].color, color: "#fff" }
-                    : { background: BADGES[badge].bg, borderColor: "transparent", color: BADGES[badge].color }
-                }
+                className={`chip px-3.5 py-2 text-[0.8rem] transition-colors ${on ? "bg-ink text-cream" : "bg-paper text-ink shadow-[inset_0_0_0_1px_var(--color-line)] hover:shadow-[inset_0_0_0_1px_var(--color-ink)]"}`}
               >
-                {BADGES[badge].emoji} {BADGES[badge].label}
+                {BADGES[badge].label}
               </button>
             );
           })}
         </div>
       </fieldset>
-      <label className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl bg-white p-4 font-bold">
+      <label className="flex cursor-pointer items-center justify-between gap-3 border-y border-line py-4 text-[0.95rem] font-semibold">
         In stock only
         <input
           type="checkbox"
@@ -167,7 +159,7 @@ export default function ShopBrowser({
   );
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[270px_1fr]">
+    <div className="grid gap-10 lg:grid-cols-[240px_1fr]">
       <aside className="hidden lg:block">
         <div className="sticky top-28">{filters}</div>
       </aside>
@@ -199,7 +191,7 @@ export default function ShopBrowser({
           </form>
           <button type="button" onClick={() => sheetRef.current?.showModal()} className="btn btn-soft lg:hidden">
             <PiFunnelBold /> Filters
-            {activeCount > 0 && <span className="chip bg-leaf px-2 py-0.5 text-white">{activeCount}</span>}
+            {activeCount > 0 && <span className="grid size-5 place-items-center rounded-full bg-ink text-[0.65rem] text-cream">{activeCount}</span>}
           </button>
           <label className="sr-only" htmlFor="sort">
             Sort by
@@ -224,8 +216,8 @@ export default function ShopBrowser({
         </p>
 
         {results.length === 0 ? (
-          <div className="mt-6 rounded-[2rem] bg-white p-10 text-center">
-            <p className="text-6xl">🥬</p>
+          <div className="mt-6 rounded-3xl border border-line bg-paper p-12 text-center">
+            <PiMagnifyingGlassBold size={32} className="mx-auto text-ink-soft" aria-hidden="true" />
             <h2 className="mt-4 text-2xl">No products match</h2>
             <p className="mt-1 text-ink-soft">Try removing a filter or searching for something else.</p>
             <button
@@ -240,7 +232,7 @@ export default function ShopBrowser({
             </button>
           </div>
         ) : (
-          <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3">
+          <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3">
             {results.map((product, index) => (
               <ProductCard key={product.id} product={product} priority={index < 4} lowStockThreshold={lowStockThreshold} />
             ))}
@@ -251,7 +243,7 @@ export default function ShopBrowser({
       <dialog
         ref={sheetRef}
         aria-label="Filters"
-        className="m-0 mt-auto max-h-[85dvh] w-full max-w-none rounded-t-[2rem] bg-cream p-0 open:animate-[slide-up_0.3s_ease-out]"
+        className="m-0 mt-auto max-h-[85dvh] w-full max-w-none rounded-t-3xl bg-cream p-0 open:animate-[slide-up_0.3s_ease-out]"
         onClick={(e) => {
           if (e.target === sheetRef.current) sheetRef.current?.close();
         }}

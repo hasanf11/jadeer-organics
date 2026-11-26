@@ -101,7 +101,7 @@ export async function setProductStatus(_prev: ActionState, formData: FormData): 
   refreshStore();
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${productId}`);
-  return success(status === "published" ? "Published — it's live in the shop 🎉" : status === "draft" ? "Hidden from the shop (draft)." : "Archived.");
+  return success(status === "published" ? "Published — it's live in the shop" : status === "draft" ? "Hidden from the shop (draft)." : "Archived.");
 }
 
 export async function toggleFeatured(_prev: ActionState, formData: FormData): Promise<ActionState> {

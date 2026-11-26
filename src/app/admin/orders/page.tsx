@@ -72,7 +72,7 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
             aria-current={status === s ? "true" : undefined}
             className={`chip shrink-0 border-2 px-4 py-2 text-sm ${status === s ? "border-ink bg-ink text-cream" : "border-line bg-white"}`}
           >
-            {STATUS_INFO[s].emoji} {STATUS_INFO[s].label}
+            {STATUS_INFO[s].label}
             <span className="rounded-full bg-cream px-1.5 text-ink">{statusCounts[s]}</span>
           </Link>
         ))}
@@ -85,7 +85,7 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
       </form>
 
       {!orders?.length ? (
-        <Empty emoji="🧾" title={q || status ? "No orders match" : "No orders yet"} text={q || status ? "Try another search or status." : "New orders will appear here instantly."} />
+        <Empty title={q || status ? "No orders match" : "No orders yet"} text={q || status ? "Try another search or status." : "New orders will appear here instantly."} />
       ) : (
         <>
           {/* Phones: cards */}

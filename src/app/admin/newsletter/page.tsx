@@ -24,7 +24,7 @@ export default async function NewsletterPage() {
         actions={<a href="/admin/newsletter/export" className="btn btn-soft btn-sm"><PiDownloadSimpleBold /> Export to Excel</a>}
       />
       {!data?.length ? (
-        <Empty emoji="✉️" title="No subscribers yet" />
+        <Empty title="No subscribers yet" />
       ) : (
         <>
           <details className="mb-4 rounded-2xl bg-white p-4">

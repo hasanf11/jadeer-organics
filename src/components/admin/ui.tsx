@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { PiTray } from "react-icons/pi";
 
 export function PageHeader({
   title,
@@ -15,7 +16,7 @@ export function PageHeader({
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="mt-1 font-display text-3xl font-extrabold md:text-4xl">{title}</h1>
+        <h1 className="mt-1 font-display text-3xl md:text-4xl">{title}</h1>
         {description && <p className="mt-1.5 max-w-2xl text-ink-soft">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
@@ -36,7 +37,7 @@ export function Panel({ title, children, actions, className = "" }: { title?: Re
     <section className={`min-w-0 rounded-3xl border border-line bg-white p-4 md:p-6 ${className}`}>
       {(title || actions) && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          {title && <h2 className="font-display text-xl font-extrabold">{title}</h2>}
+          {title && <h2 className="font-display text-xl">{title}</h2>}
           {actions}
         </div>
       )}
@@ -45,11 +46,11 @@ export function Panel({ title, children, actions, className = "" }: { title?: Re
   );
 }
 
-export function Empty({ emoji, title, text }: { emoji: string; title: string; text?: string }) {
+export function Empty({ title, text }: { title: string; text?: string }) {
   return (
     <div className="rounded-3xl border-2 border-dashed border-line bg-white/60 p-10 text-center">
-      <p className="text-5xl">{emoji}</p>
-      <p className="mt-3 text-lg font-bold">{title}</p>
+      <PiTray size={32} className="mx-auto text-ink-soft" aria-hidden="true" />
+      <p className="mt-3 font-display text-xl">{title}</p>
       {text && <p className="mt-1 text-ink-soft">{text}</p>}
     </div>
   );

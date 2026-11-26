@@ -9,7 +9,6 @@ import MobileTabBar from "@/components/store/mobile-tab-bar";
 import WhatsAppButton from "@/components/store/whatsapp-button";
 import AnnouncementBar from "@/components/store/announcement-bar";
 import SmoothScroll from "@/components/motion/smooth-scroll";
-import ClickSpark from "@/components/motion/click-spark";
 import JsonLd from "@/components/json-ld";
 import { organizationJsonLd } from "@/lib/seo";
 
@@ -29,7 +28,7 @@ export default async function StoreLayout({ children }: { children: ReactNode })
         <AnnouncementBar text={store.settings.announcement_text} />
       )}
       <SiteHeader
-        categories={store.categories.map(({ slug, name, nameAr, emoji, color }) => ({ slug, name, nameAr, emoji, color }))}
+        categories={store.categories.map(({ slug, name, nameAr, image, productCount }) => ({ slug, name, nameAr, image, productCount }))}
       />
       <main id="main" className="min-h-[60vh]">
         {children}
@@ -40,7 +39,6 @@ export default async function StoreLayout({ children }: { children: ReactNode })
       <BagDrawer />
       <SearchDialog />
       <SmoothScroll />
-      <ClickSpark />
     </StoreProvider>
   );
 }

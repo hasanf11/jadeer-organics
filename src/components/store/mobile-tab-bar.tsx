@@ -34,45 +34,43 @@ function TabBarView({ pathname }: { pathname: string }) {
 
   if (pathname.startsWith("/checkout")) return null;
 
-  const item = "relative flex flex-1 flex-col items-center justify-center gap-0.5 pt-2 pb-1.5 text-[0.7rem] font-bold";
-  const active = (match: boolean) => (match ? "text-leaf" : "text-ink-soft");
+  const item = "relative flex flex-1 flex-col items-center justify-center gap-1 pt-2.5 pb-2 text-[0.68rem] font-semibold tracking-wide";
+  const active = (match: boolean) => (match ? "text-ink" : "text-ink-soft/80");
 
   return (
     <nav
       aria-label="Quick navigation"
-      className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 backdrop-blur-xl lg:hidden"
+      className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 backdrop-blur-xl lg:hidden"
     >
       <div className="mx-auto flex max-w-lg">
         <Link href="/" className={`${item} ${active(pathname === "/")}`}>
-          <PiHouseBold size={23} />
+          <PiHouseBold size={22} />
           Home
         </Link>
         <Link
           href="/shop"
           className={`${item} ${active(pathname.startsWith("/shop") || pathname.startsWith("/category") || pathname.startsWith("/products"))}`}
         >
-          <PiSquaresFourBold size={23} />
+          <PiSquaresFourBold size={22} />
           Shop
         </Link>
         <button type="button" onClick={openSearch} className={`${item} text-ink-soft`}>
-          <span className="-mt-6 grid size-14 place-items-center rounded-full bg-leaf text-white shadow-[0_6px_0_0_var(--color-leaf-dark)] ring-4 ring-paper">
-            <PiMagnifyingGlassBold size={24} />
-          </span>
+          <PiMagnifyingGlassBold size={22} />
           Search
         </button>
         <Link href="/wishlist" className={`${item} ${active(pathname === "/wishlist")}`}>
-          <PiHeartBold size={23} />
+          <PiHeartBold size={22} />
           {ids.length > 0 && (
-            <span className="absolute left-1/2 top-1 ml-2 grid min-w-[1.1rem] place-items-center rounded-full bg-berry px-1 text-[0.62rem] text-white">
+            <span className="absolute left-1/2 top-1 ml-2 grid min-w-[1.1rem] place-items-center rounded-full bg-tomato px-1 text-[0.6rem] text-white">
               {ids.length}
             </span>
           )}
           Saved
         </Link>
         <button type="button" onClick={openBag} className={`${item} ${active(pathname === "/bag")}`} data-bag-target>
-          <PiShoppingBagOpenBold size={23} />
+          <PiShoppingBagOpenBold size={22} />
           {count > 0 && (
-            <span className="absolute left-1/2 top-1 ml-2 grid min-w-[1.1rem] place-items-center rounded-full bg-tomato px-1 text-[0.62rem] text-white">
+            <span className="absolute left-1/2 top-1 ml-2 grid min-w-[1.1rem] place-items-center rounded-full bg-tomato px-1 text-[0.6rem] text-white">
               {count}
             </span>
           )}

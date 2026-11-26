@@ -40,7 +40,7 @@ export default async function PartnersPage() {
         ))}
       </div>
       <section className="mt-6 rounded-3xl border-2 border-dashed border-leaf/40 bg-mint/30 p-5">
-        <h2 className="mb-3 font-display text-xl font-extrabold">Add a partner</h2>
+        <h2 className="mb-3 font-display text-xl">Add a partner</h2>
         <ActionForm action={savePartner} className={grid} resetOnSuccess><Fields /><SubmitButton className="btn btn-primary btn-sm">Add</SubmitButton></ActionForm>
       </section>
     </div>

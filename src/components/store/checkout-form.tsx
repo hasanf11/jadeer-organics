@@ -8,6 +8,7 @@ import {
   PiCaretDownBold,
   PiHandCoinsBold,
   PiLockSimpleBold,
+  PiShoppingBagOpenBold,
   PiTagBold,
   PiXBold,
 } from "react-icons/pi";
@@ -187,7 +188,7 @@ export default function CheckoutForm() {
   if (ready && lines.length === 0 && !placing) {
     return (
       <div className="mx-auto max-w-md py-16 text-center">
-        <div className="mx-auto grid size-28 place-items-center rounded-full bg-butter text-6xl">🧺</div>
+        <div className="mx-auto grid size-20 place-items-center rounded-full bg-sand text-ink-soft"><PiShoppingBagOpenBold size={30} /></div>
         <h1 className="mt-5 text-3xl">Your bag is empty</h1>
         <p className="mt-2 text-ink-soft">Add a few good things and come back to check out.</p>
         <Link href="/shop" className="btn btn-primary mt-6">Go shopping</Link>
@@ -272,7 +273,7 @@ export default function CheckoutForm() {
         )}
         <div className="mt-2 flex items-baseline justify-between border-t border-line pt-3">
           <dt className="text-lg font-bold">Total</dt>
-          <dd className="font-display text-3xl font-extrabold tabular-nums">{money(totals.total)}</dd>
+          <dd className="font-display text-3xl tabular-nums">{money(totals.total)}</dd>
         </div>
       </dl>
       <FreeDeliveryMeter subtotal={subtotal} />
@@ -293,7 +294,7 @@ export default function CheckoutForm() {
         </div>
 
         {/* Mobile order summary */}
-        <div className="rounded-[1.5rem] bg-white lg:hidden">
+        <div className="rounded-2xl border border-line bg-paper lg:hidden">
           <button
             type="button"
             onClick={() => setSummaryOpen((o) => !o)}
@@ -304,14 +305,14 @@ export default function CheckoutForm() {
               Order summary ({lines.reduce((s, l) => s + l.quantity, 0)})
               <PiCaretDownBold className={`transition-transform ${summaryOpen ? "rotate-180" : ""}`} />
             </span>
-            <span className="font-display text-xl font-extrabold">{money(totals.total)}</span>
+            <span className="font-display text-xl">{money(totals.total)}</span>
           </button>
           {summaryOpen && <div className="border-t border-line p-4">{summary}</div>}
         </div>
 
         <section className="card grid gap-4 p-5 md:p-7" aria-labelledby="contact-title">
           <h2 id="contact-title" className="flex items-center gap-3 text-2xl">
-            <span className="grid size-9 place-items-center rounded-full bg-leaf text-base text-white">1</span> Your details
+            <span className="grid size-8 place-items-center rounded-full bg-ink font-sans text-sm font-semibold text-cream">1</span> Your details
           </h2>
           <div className="field">
             <label htmlFor="checkout-name">Full name</label>
@@ -322,8 +323,8 @@ export default function CheckoutForm() {
             <div className="field">
               <label htmlFor="checkout-phone">Phone (WhatsApp)</label>
               <div className="relative">
-                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-semibold text-ink-soft">🇱🇧</span>
-                <input id="checkout-phone" className={`${fieldClass("phone")} pl-11`} value={details.phone} onChange={(e) => set("phone", e.target.value)} type="tel" inputMode="tel" autoComplete="tel" placeholder="70 123 456" maxLength={40} required aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "err-phone" : "hint-phone"} />
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink-soft">+961</span>
+                <input id="checkout-phone" className={`${fieldClass("phone")} pl-14`} value={details.phone} onChange={(e) => set("phone", e.target.value)} type="tel" inputMode="tel" autoComplete="tel" placeholder="70 123 456" maxLength={40} required aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "err-phone" : "hint-phone"} />
               </div>
               {errors.phone ? <p id="err-phone" className="field-error">{errors.phone}</p> : <p id="hint-phone" className="field-hint">We&apos;ll confirm your order on this number.</p>}
             </div>
@@ -337,7 +338,7 @@ export default function CheckoutForm() {
 
         <section className="card grid gap-4 p-5 md:p-7" aria-labelledby="delivery-title">
           <h2 id="delivery-title" className="flex items-center gap-3 text-2xl">
-            <span className="grid size-9 place-items-center rounded-full bg-tomato text-base text-white">2</span> Delivery
+            <span className="grid size-8 place-items-center rounded-full bg-ink font-sans text-sm font-semibold text-cream">2</span> Delivery
           </h2>
           <fieldset>
             <legend className="field-label mb-2">Delivery area</legend>
@@ -347,13 +348,13 @@ export default function CheckoutForm() {
                 return (
                   <label
                     key={z.id}
-                    className={`flex cursor-pointer items-center justify-between gap-2 rounded-2xl border-[3px] p-3 transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun ${
-                      details.zoneId === z.id ? "border-leaf bg-mint" : "border-line bg-white hover:border-ink"
+                    className={`flex cursor-pointer items-center justify-between gap-2 rounded-xl border p-3.5 transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-leaf ${
+                      details.zoneId === z.id ? "border-ink bg-paper shadow-[inset_0_0_0_1px_var(--color-ink)]" : "border-line bg-white hover:border-ink"
                     }`}
                   >
                     <input type="radio" name="zone" value={z.id} checked={details.zoneId === z.id} onChange={() => set("zoneId", z.id)} className="sr-only" />
                     <span>
-                      <span className="block font-bold leading-tight">{z.name}</span>
+                      <span className="block font-semibold leading-tight">{z.name}</span>
                       {z.eta && <span className="text-xs text-ink-soft">{z.eta}</span>}
                     </span>
                     <span className="shrink-0 text-sm font-bold">{free || z.fee_cents === 0 ? <span className="text-leaf">Free</span> : money(z.fee_cents)}</span>
@@ -372,11 +373,11 @@ export default function CheckoutForm() {
             <label htmlFor="checkout-notes">Note for us <span className="font-normal text-ink-soft">(optional)</span></label>
             <input id="checkout-notes" className="input" value={details.notes} onChange={(e) => set("notes", e.target.value)} placeholder="e.g. call before arriving" maxLength={1000} />
           </div>
-          {settings.order_notice && <p className="rounded-2xl bg-butter/70 p-3 text-sm font-semibold text-[#6b4a00]">🕓 {settings.order_notice}</p>}
+          {settings.order_notice && <p className="rounded-xl bg-sand/70 p-3 text-sm text-ink-soft">{settings.order_notice}</p>}
         </section>
 
         <section className="card flex items-center gap-4 p-5 md:p-7" aria-labelledby="payment-title">
-          <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-sun text-brown"><PiHandCoinsBold size={30} /></span>
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sand text-leaf"><PiHandCoinsBold size={24} /></span>
           <div>
             <h2 id="payment-title" className="text-xl">Cash on delivery</h2>
             <p className="text-sm text-ink-soft">Pay the driver in cash (USD or LBP at the day&apos;s rate) when your order arrives.</p>
@@ -384,10 +385,10 @@ export default function CheckoutForm() {
         </section>
 
         {formError && (
-          <p role="alert" className="rounded-2xl bg-tomato/10 p-4 font-bold text-tomato">{formError}</p>
+          <p role="alert" className="rounded-xl bg-tomato/10 p-4 font-semibold text-tomato">{formError}</p>
         )}
 
-        <button type="submit" className="btn btn-primary min-h-14 w-full text-lg" disabled={placing || !settings.accepting_orders}>
+        <button type="submit" className="btn btn-primary min-h-14 w-full text-base" disabled={placing || !settings.accepting_orders}>
           {placing ? (
             <>
               <span className="size-5 animate-spin rounded-full border-[3px] border-white/40 border-t-white" /> Placing your order…
