@@ -1,5 +1,6 @@
 -- Ja'deer Organics — starting catalog, shops and delivery areas.
--- Run once in the Supabase SQL editor after the schema migration.
+-- Run in the Supabase SQL editor after the schema migration.
+-- Safe to run again: rows that already exist are skipped.
 -- Prices and stock are starting values: edit them in the admin.
 
 begin;
@@ -11,8 +12,10 @@ insert into public.categories (name, name_ar, slug, description, color, emoji, s
   ('Molasses & Spreads', 'دبس وطحينة', 'molasses-spreads', 'Pomegranate molasses, date tahini spread and pantry staples from Lebanese farms.', '#8d3b2f', '🍯', 4),
   ('Teas & Wellness', 'شاي وعافية', 'teas-wellness', 'Japanese matcha, organic green tea and collagen peptides for your daily ritual.', '#3f7d3a', '🍵', 5),
   ('Keto Corner', 'منتجات الكيتو', 'keto', 'Keto-friendly ketchup, BBQ sauce and sugar-free syrups that keep the flavour.', '#0f8b8d', '🥑', 6),
-  ('Natural Body Care', 'عناية طبيعية', 'body-care', 'Certified organic skincare, aluminium-free deodorants and plant-based body care.', '#d9668f', '🧴', 7);
+  ('Natural Body Care', 'عناية طبيعية', 'body-care', 'Certified organic skincare, aluminium-free deodorants and plant-based body care.', '#d9668f', '🧴', 7)
+on conflict (slug) do nothing;
 
+drop table if exists seed_products;
 create temporary table seed_products (
   category text, name text, name_ar text, slug text, tagline text, description text,
   ingredients text, how_to_use text, badges text[], shape text, color text, bg text,
@@ -251,7 +254,8 @@ insert into public.products (
 select c.id, s.name, s.name_ar, s.slug, s.tagline, s.description, s.ingredients, s.how_to_use,
        s.badges, s.shape, s.color, s.bg, s.featured, 'published', s.sort
   from seed_products s
-  join public.categories c on c.slug = s.category;
+  join public.categories c on c.slug = s.category
+on conflict (slug) do nothing;
 
 -- Sizes: product slug, label, price (USD cents), compare-at price, stock.
 insert into public.product_variants (product_id, label, price_cents, compare_at_cents, stock_quantity, sort_order)
@@ -297,15 +301,19 @@ select p.id, v.label, v.price, v.compare, v.stock, v.sort
     ('smooth-shampoo','400 ml',1500,null,14,0),
     ('organic-face-cream','50 ml',2400,2800,9,0)
   ) as v(slug, label, price, compare, stock, sort)
-  join public.products p on p.slug = v.slug;
+  join public.products p on p.slug = v.slug
+on conflict do nothing;
 
-insert into public.store_locations (name, name_ar, area, address, phone, hours, latitude, longitude, maps_query, sort_order) values
+insert into public.store_locations (name, name_ar, area, address, phone, hours, latitude, longitude, maps_query, sort_order)
+select * from (values
   ('Ja''deer Organics — Haret Hreik', 'جدير — حارة حريك', 'Haret Hreik, Beirut',
    'Haret Hreik, Beirut Southern Suburbs, Lebanon', '', 'Mon–Sat 9:00 AM – 9:00 PM · Sun 10:00 AM – 6:00 PM',
    33.8564, 35.5066, '', 1),
   ('Ja''deer Organics — Kayfoun', 'جدير — كيفون', 'Kayfoun, Aley',
    'Kayfoun main road, Aley District, Mount Lebanon', '', 'Mon–Sat 9:00 AM – 9:00 PM · Sun 10:00 AM – 6:00 PM',
-   null, null, 'Jadeer Organics Kayfoun Lebanon', 2);
+   null::double precision, null::double precision, 'Jadeer Organics Kayfoun Lebanon', 2)
+) as new_store(name, name_ar, area, address, phone, hours, latitude, longitude, maps_query, sort_order)
+where not exists (select 1 from public.store_locations l where l.name = new_store.name);
 
 insert into public.delivery_zones (name, fee_cents, eta, sort_order) values
   ('Beirut', 300, 'Same day', 1),
@@ -315,16 +323,21 @@ insert into public.delivery_zones (name, fee_cents, eta, sort_order) values
   ('Keserwan & Jbeil', 500, '1–2 days', 5),
   ('South Lebanon', 500, '1–2 days', 6),
   ('North Lebanon', 600, '1–2 days', 7),
-  ('Bekaa', 600, '1–2 days', 8);
+  ('Bekaa', 600, '1–2 days', 8)
+on conflict do nothing;
 
-insert into public.retail_partners (name, url, sort_order) values
+insert into public.retail_partners (name, url, sort_order)
+select * from (values
   ('Allganic', '', 1),
   ('New Earth', '', 2),
   ('Nakhat Organic', '', 3),
-  ('Better Life Market', '', 4);
+  ('Better Life Market', '', 4)
+) as new_partner(name, url, sort_order)
+where not exists (select 1 from public.retail_partners r where r.name = new_partner.name);
 
 insert into public.promotions (code, description, kind, value, min_order_cents) values
-  ('WELCOME10', '10% off your first order', 'percent', 10, 2000);
+  ('WELCOME10', '10% off your first order', 'percent', 10, 2000)
+on conflict do nothing;
 
 
 
@@ -359,5 +372,9 @@ select p.id, '/instagram/post-' || i.file || '.webp', p.name, i.sort
     ('pesto-mayo','41',0),
     ('jallab-syrup','18',0)
   ) as i(slug, file, sort)
-  join public.products p on p.slug = i.slug;
+  join public.products p on p.slug = i.slug
+ where not exists (
+   select 1 from public.product_images x
+    where x.product_id = p.id and x.path = '/instagram/post-' || i.file || '.webp'
+ );
 commit;
