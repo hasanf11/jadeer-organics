@@ -50,7 +50,7 @@ export default function CountUp({
       observer.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [to, duration]);
+  }, [to, duration, decimals]);
 
   return (
     <span ref={ref} className={className}>

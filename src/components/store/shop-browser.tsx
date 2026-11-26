@@ -40,7 +40,8 @@ export default function ShopBrowser({
   const sheetRef = useRef<HTMLDialogElement>(null);
 
   const category = lockedCategory ?? params.get("category") ?? "";
-  const badges = (params.get("tags") ?? "").split(",").filter((b): b is BadgeKey => b in BADGES);
+  const tags = params.get("tags") ?? "";
+  const badges = useMemo(() => tags.split(",").filter((b): b is BadgeKey => b in BADGES), [tags]);
   const sort = params.get("sort") ?? "featured";
   const inStockOnly = params.get("stock") === "1";
   const [query, setQuery] = useState(params.get("q") ?? "");

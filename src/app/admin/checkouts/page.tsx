@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PiWhatsappLogoBold } from "react-icons/pi";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { formatDateTime, money } from "@/lib/format";
+import { currentTime, formatDateTime, money } from "@/lib/format";
 import { markLeadContacted } from "@/lib/admin-actions/care";
 import ActionForm, { SubmitButton } from "@/components/admin/action-form";
 import { Empty, PageHeader, Pill } from "@/components/admin/ui";
@@ -15,8 +15,9 @@ type Lead = { id: string; phone: string; name: string; zone_name: string; items:
 export default async function CheckoutsPage() {
   await requireAdmin();
   const supabase = await createClient();
-  const since = new Date(Date.now() - 30 * 86_400_000).toISOString();
-  const quiet = new Date(Date.now() - 30 * 60_000).toISOString();
+  const now = currentTime();
+  const since = new Date(now - 30 * 86_400_000).toISOString();
+  const quiet = new Date(now - 30 * 60_000).toISOString();
   const { data } = await supabase.from("checkout_leads").select("*").gte("updated_at", since).lte("updated_at", quiet).order("updated_at", { ascending: false });
   const leads = (data ?? []) as Lead[];
 

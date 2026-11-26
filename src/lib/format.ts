@@ -68,3 +68,8 @@ export function dollarsInput(cents: number | null | undefined): string {
   if (cents == null) return "";
   return (cents / 100).toFixed(2);
 }
+
+/** The current time (kept out of component bodies for render purity). */
+export function currentTime(): number {
+  return Date.now();
+}
