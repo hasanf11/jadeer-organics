@@ -1,0 +1,14 @@
+# Weekly dependency checks. Security fixes open pull requests as soon as
+# they are published; other updates are grouped to keep noise low.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
