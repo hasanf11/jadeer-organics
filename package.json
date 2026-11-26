@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "seed": "node --env-file=.env.local scripts/seed.mjs",
     "demo:add": "node --env-file=.env.local scripts/demo-data.mjs add",
-    "demo:remove": "node --env-file=.env.local scripts/demo-data.mjs remove"
+    "demo:remove": "node --env-file=.env.local scripts/demo-data.mjs remove",
+    "admin:create": "node --env-file=.env.local scripts/create-admin.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
