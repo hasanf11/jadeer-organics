@@ -28,8 +28,8 @@ export default async function JournalPage() {
           const text = recipeText(recipe, locale);
           return (
             <Link key={recipe.slug} href={href(`/journal/${recipe.slug}`)} className="group block">
-              <span className={`relative block overflow-hidden rounded-[2rem] ${i === 0 ? "aspect-[4/3]" : "aspect-[4/3]"}`} style={{ background: recipe.color }}>
-                <Image src={recipe.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" priority={i < 2} />
+              <span className={`relative block overflow-hidden rounded-[2rem] aspect-[4/3]`} style={{ background: recipe.color }}>
+                <Image src={recipe.image} quality={85} style={{ objectPosition: recipe.focus }} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" priority={i < 2} />
               </span>
               <span className="mt-4 flex gap-4 text-sm font-bold text-ink-soft">
                 <span className="flex items-center gap-1"><PiTimerBold aria-hidden="true" /> {t.journal.minutes(recipe.minutes)}</span>

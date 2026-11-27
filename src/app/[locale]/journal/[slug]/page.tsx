@@ -65,7 +65,7 @@ export default async function RecipePage({ params }: PageProps<"/[locale]/journa
             </p>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem]" style={{ background: recipe.color }}>
-            <Image src={recipe.image} alt={text.title} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <Image src={recipe.image} quality={85} style={{ objectPosition: recipe.focus }} alt={text.title} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </div>
         </div>
 

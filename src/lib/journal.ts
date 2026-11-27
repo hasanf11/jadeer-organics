@@ -6,6 +6,8 @@ type List = { en: string[]; ar: string[] };
 export type Recipe = {
   slug: string;
   image: string;
+  /** Which part of the photo stays in view when it is cropped (CSS object-position). */
+  focus: string;
   color: string;
   minutes: number;
   serves: number;
@@ -20,7 +22,8 @@ export type Recipe = {
 export const RECIPES: Recipe[] = [
   {
     slug: "fattoush-with-pomegranate-molasses",
-    image: "/instagram/post-29.webp",
+    image: "/photos/trio-shelf.webp",
+    focus: "50% 100%",
     color: "#a3213f",
     minutes: 20,
     serves: 4,
@@ -41,7 +44,8 @@ export const RECIPES: Recipe[] = [
   },
   {
     slug: "iced-matcha-latte",
-    image: "/instagram/post-01.webp",
+    image: "/photos/matcha.webp",
+    focus: "50% 64%",
     color: "#2f6b47",
     minutes: 5,
     serves: 1,
@@ -62,7 +66,8 @@ export const RECIPES: Recipe[] = [
   },
   {
     slug: "jallab-summer-cooler",
-    image: "/instagram/post-18.webp",
+    image: "/photos/syrup-collection.webp",
+    focus: "50% 78%",
     color: "#c2412d",
     minutes: 5,
     serves: 2,
@@ -83,7 +88,8 @@ export const RECIPES: Recipe[] = [
   },
   {
     slug: "keto-bbq-chicken-wings",
-    image: "/instagram/post-39.webp",
+    image: "/photos/keto-bbq-dip.webp",
+    focus: "50% 52%",
     color: "#146b66",
     minutes: 45,
     serves: 4,

@@ -328,7 +328,7 @@ export default async function HomePage() {
             return (
               <Link key={recipe.slug} href={href(`/journal/${recipe.slug}`)} className="group block">
                 <span className="relative block aspect-[4/3] overflow-hidden rounded-3xl" style={{ background: recipe.color }}>
-                  <Image src={recipe.image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={recipe.image} quality={85} style={{ objectPosition: recipe.focus }} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <span className="absolute start-3 top-3 flex items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-xs font-bold">
                     <PiTimerBold aria-hidden="true" /> {t.journal.minutes(recipe.minutes)}
                   </span>
