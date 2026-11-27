@@ -493,6 +493,7 @@ const en = {
       { title: "Certified organic", text: "No preservatives, no pesticides" },
       { title: "Delivery across Lebanon", text: "Same day in Beirut" },
       { title: "Cash on delivery", text: "Pay when your order arrives" },
+      { title: "Questions? Ask us", text: "Chat with us on WhatsApp" },
     ],
     tagline: "You deserve this way of life. Your health is our mission.",
     newsletter: "Join our mailing list",

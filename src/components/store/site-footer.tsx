@@ -43,29 +43,45 @@ export default async function SiteFooter({
     { href: whatsapp ? `https://wa.me/${whatsapp}` : "", label: t.common.whatsapp, icon: PiWhatsappLogoBold },
     { href: settings.email ? `mailto:${settings.email}` : "", label: t.common.email, icon: PiEnvelopeSimpleBold },
   ].filter((s) => s.href);
-  const trustIcons = [PiSealCheckBold, PiTruckBold, PiHandCoinsBold];
+  const trustIcons = [PiSealCheckBold, PiTruckBold, PiHandCoinsBold, PiWhatsappLogoBold];
+  const trustItem = (i: number) => {
+    const { title, text } = t.footer.trust[i];
+    const Icon = trustIcons[i];
+    const body = (
+      <>
+        <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sun text-forest">
+          <Icon size={23} aria-hidden="true" />
+        </span>
+        <span className="min-w-0">
+          <span className="block font-bold">{title}</span>
+          <span className="block text-sm text-cream/60">{text}</span>
+        </span>
+      </>
+    );
+    // The last item opens a WhatsApp chat with the shop.
+    return i === 3 && whatsapp ? (
+      <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 transition-opacity hover:opacity-90">
+        {body}
+      </a>
+    ) : (
+      <div className="flex items-center gap-4">{body}</div>
+    );
+  };
 
   const heading = "mb-4 text-[0.72rem] font-extrabold text-sun en:uppercase en:tracking-[0.2em] ar:text-sm";
   const link = "text-cream/75 transition-colors hover:text-white";
 
   return (
     <footer className="grain mt-24 bg-forest text-cream">
+      {/* Same columns as the footer below: brand | Shop · Help · Visit us. */}
       <div className="border-b border-white/10">
-        <div className="container-x grid gap-5 py-8 sm:grid-cols-3">
-          {t.footer.trust.map(({ title, text }, i) => {
-            const Icon = trustIcons[i];
-            return (
-              <div key={title} className="flex items-center gap-4">
-                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sun text-forest">
-                  <Icon size={23} aria-hidden="true" />
-                </span>
-                <span>
-                  <span className="block font-bold">{title}</span>
-                  <span className="text-sm text-cream/60">{text}</span>
-                </span>
-              </div>
-            );
-          })}
+        <div className="container-x grid gap-x-10 gap-y-6 py-8 sm:grid-cols-2 lg:grid-cols-[1.15fr_2fr] lg:gap-16 [&>*]:min-w-0">
+          {trustItem(0)}
+          <div className="contents lg:grid lg:grid-cols-3 lg:gap-x-10 [&>*]:min-w-0">
+            {trustItem(1)}
+            {trustItem(2)}
+            {trustItem(3)}
+          </div>
         </div>
       </div>
 
