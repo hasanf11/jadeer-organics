@@ -37,6 +37,10 @@ the same page in both languages; search engines get `hreflang` links for both.
   bulk status changes, printable delivery slips (selected or by status), Excel export
 - Products: details, Arabic names, labels, sizes & prices (sale prices), stock,
   photo upload (auto-optimised), illustration designer, duplicate, publish/draft
+- Import from Excel (Products → Import from Excel): download the template or the current
+  products, fill one row per size, see a preview with any mistakes (row by row) and
+  import everything in one go — new products are added, existing ones updated, stock
+  changes saved in the stock history; all or nothing
 - Inventory (receive stock, corrections, movement history), categories, promo codes
 - Customers (grouped by phone, loyal/top badges), unfinished checkouts follow-up,
   reviews moderation, contact messages, stock alerts, mailing list (+ Excel export)
@@ -56,6 +60,7 @@ Breadcrumbs, FAQ), sitemap with images, robots.txt, web app manifest.
 1. **Supabase**: create a project, then in the SQL editor run, in order:
    - `supabase/migrations/20261126000001_schema.sql`
    - `supabase/migrations/20261127000002_arabic_and_order_links.sql`
+   - `supabase/migrations/20261128000003_product_import.sql` (Excel product import)
    - `supabase/seed.sql` (categories, 35 products, shops, delivery areas, partners, `WELCOME10`)
    - `supabase/seed-arabic.sql` (Arabic texts for all of the above)
    - `supabase/seed-photos.sql` (product photos from `public/photos/`, plus 5 new

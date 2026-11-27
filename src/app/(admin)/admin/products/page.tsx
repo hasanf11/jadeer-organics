@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PiMagnifyingGlassBold, PiPlusBold, PiStarFill } from "react-icons/pi";
+import { PiMagnifyingGlassBold, PiMicrosoftExcelLogoBold, PiPlusBold, PiStarFill } from "react-icons/pi";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { shortMoney } from "@/lib/format";
@@ -44,7 +44,12 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
       <PageHeader
         title="Products"
         description="Everything in your shop. Tap a product to edit its details, sizes, prices, stock and photos."
-        actions={<Link href="/admin/products/new" className="btn btn-primary"><PiPlusBold /> New product</Link>}
+        actions={
+          <>
+            <Link href="/admin/products/import" className="btn btn-soft"><PiMicrosoftExcelLogoBold /> Import from Excel</Link>
+            <Link href="/admin/products/new" className="btn btn-primary"><PiPlusBold /> New product</Link>
+          </>
+        }
       />
 
       <form className="mb-5 flex flex-wrap gap-2" role="search">
