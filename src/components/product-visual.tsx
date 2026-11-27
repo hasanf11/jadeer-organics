@@ -28,6 +28,7 @@ export default function ProductVisual({
         alt={alt}
         fill
         sizes={sizes}
+        quality={85}
         priority={priority}
         className={`object-cover ${className}`}
       />

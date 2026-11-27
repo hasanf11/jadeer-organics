@@ -43,7 +43,7 @@ export default function ProductGallery({
           {slides.map((slide, i) => (
             <div key={i} className="relative aspect-square w-full shrink-0 sm:aspect-[4/5]">
               {slide.src ? (
-                <Image src={slide.src} alt={slide.alt} fill priority={i === 0} sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+                <Image src={slide.src} alt={slide.alt} fill priority={i === 0} quality={85} sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
               ) : (
                 <ProductArt shape={art.shape} color={art.color} background={art.background} name={name} className="absolute inset-0 h-full w-full" />
               )}
