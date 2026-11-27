@@ -31,9 +31,9 @@ export default async function AboutPage() {
           <Link href={href("/shop")} className="btn btn-primary mt-8">{t.about.cta} <Arrow aria-hidden="true" /></Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {["19", "29", "36", "07"].map((file, i) => (
+          {["truffle-olive-oil", "vinegar-trio", "mustard-burger", "matcha"].map((file, i) => (
             <div key={file} className={`relative aspect-[4/5] overflow-hidden rounded-3xl shadow-soft ${i % 2 ? "translate-y-8" : ""}`}>
-              <Image src={`/instagram/post-${file}.webp`} alt="" fill sizes="(min-width: 1024px) 25vw, 45vw" className="object-cover" priority={i < 2} />
+              <Image src={`/photos/${file}.webp`} alt="" fill sizes="(min-width: 1024px) 25vw, 45vw" className="object-cover" priority={i < 2} />
             </div>
           ))}
         </div>

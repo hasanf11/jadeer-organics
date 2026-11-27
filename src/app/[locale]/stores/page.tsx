@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ locale, title: t.stores.metaTitle, description: t.stores.metaDescription, path: "/stores" });
 }
 
-const photos = ["/instagram/post-33.webp", "/instagram/post-30.webp", "/instagram/post-34.webp"];
+const photos = ["/photos/olive-oil-hummus.webp", "/photos/trio-shelf.webp", "/photos/balsamic-drizzle.webp"];
 const tones = ["bg-mint", "bg-blush", "bg-butter"];
 
 export default async function StoresPage() {

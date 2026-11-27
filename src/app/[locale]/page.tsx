@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { ...pageMetadata({ locale, title: t.meta.title, description: t.meta.description, path: "/" }), title: { absolute: t.meta.title } };
 }
 
-const instagramPosts = ["29", "08", "06", "33", "37", "10", "16", "27", "36", "07", "12", "30", "34", "09"];
+const instagramPosts = ["olive-oil-hummus", "chili-twist", "matcha", "mustard-burger", "syrup-collection", "balsamic-drizzle", "keto-bbq-dip", "truffle-olive-oil", "lemonade-syrup", "ketchup-rocks", "green-tea", "trio-shelf", "date-tahini", "mayo-trio", "black-tea", "chili-ketchup-net", "collagen", "body-wash"];
 const heroSlugs = ["extra-virgin-olive-oil", "pomegranate-molasses", "japanese-matcha", "strawberry-syrup", "chilli-hot-sauce"];
 const promiseIcons = [PiSealCheckBold, PiFlaskBold, PiPlantBold, PiLeafBold];
 const promiseColors = ["bg-leaf", "bg-tomato", "bg-teal", "bg-berry"];
@@ -271,9 +271,22 @@ export default async function HomePage() {
       <section className="bg-blush py-20 md:py-24">
         <div className="container-x grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="grid grid-cols-2 gap-3">
-            {["06", "09", "37", "32"].map((file, i) => (
-              <div key={file} className={`relative aspect-[4/5] overflow-hidden rounded-3xl shadow-soft ${i % 2 ? "translate-y-6" : ""}`}>
-                <Image src={`/instagram/post-${file}.webp`} alt="" fill sizes="(min-width: 1024px) 22vw, 45vw" className="object-cover" />
+            <div className="relative row-span-2 overflow-hidden rounded-3xl bg-[#c3e4c6] shadow-soft">
+              <video
+                className="absolute inset-0 size-full object-cover"
+                src="/photos/syrup-flavours.mp4"
+                poster="/photos/syrup-flavours-poster.webp"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden="true"
+              />
+            </div>
+            {["lemonade-syrup", "apple-cinnamon-syrup"].map((file) => (
+              <div key={file} className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-soft">
+                <Image src={`/photos/${file}.webp`} alt="" fill sizes="(min-width: 1024px) 22vw, 45vw" className="object-cover" />
               </div>
             ))}
           </div>
@@ -342,7 +355,7 @@ export default async function HomePage() {
         <Marquee duration={70} pauseOnHover className="mt-9">
           {instagramPosts.map((file) => (
             <a key={file} href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="group relative mx-2 block aspect-[4/5] w-44 shrink-0 overflow-hidden rounded-3xl md:w-56" aria-label={t.common.instagram}>
-              <Image src={`/instagram/post-${file}.webp`} alt="" fill sizes="224px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src={`/photos/${file}.webp`} alt="" fill sizes="224px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
             </a>
           ))}
         </Marquee>
@@ -363,7 +376,7 @@ export default async function HomePage() {
             {locations.map((location, i) => (
               <article key={location.id} className="group overflow-hidden rounded-3xl bg-paper shadow-soft">
                 <a href={googleMapsUrl(location)} target="_blank" rel="noopener noreferrer" className="relative block aspect-[16/10] overflow-hidden" aria-label={`${t.common.openInMaps}: ${location.name}`}>
-                  <Image src={i === 0 ? "/instagram/post-33.webp" : "/instagram/post-30.webp"} alt="" fill sizes="(min-width: 640px) 30vw, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={i === 0 ? "/photos/olive-oil-hummus.webp" : "/photos/trio-shelf.webp"} alt="" fill sizes="(min-width: 640px) 30vw, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <span className="absolute start-3 top-3 grid size-10 place-items-center rounded-full bg-tomato text-white shadow-soft">
                     <PiMapPinFill size={20} aria-hidden="true" />
                   </span>

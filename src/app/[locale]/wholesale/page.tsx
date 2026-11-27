@@ -29,7 +29,7 @@ export default async function WholesalePage() {
             {partners.length > 0 && <p className="mt-6 font-display text-xl text-white/70" dir="ltr">{partners.map((p) => p.name).join(" · ")}</p>}
           </div>
           <div className="relative hidden aspect-[4/3] overflow-hidden rounded-[2rem] lg:block">
-            <Image src="/instagram/post-35.webp" alt="" fill sizes="40vw" className="object-cover" priority />
+            <Image src="/photos/syrup-collection.webp" alt="" fill sizes="40vw" className="object-cover" priority />
           </div>
         </div>
       </section>

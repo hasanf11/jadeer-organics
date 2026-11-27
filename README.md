@@ -58,8 +58,11 @@ Breadcrumbs, FAQ), sitemap with images, robots.txt, web app manifest.
    - `supabase/migrations/20261127000002_arabic_and_order_links.sql`
    - `supabase/seed.sql` (categories, 35 products, shops, delivery areas, partners, `WELCOME10`)
    - `supabase/seed-arabic.sql` (Arabic texts for all of the above)
+   - `supabase/seed-photos.sql` (product photos from `public/photos/`, plus 5 new
+     products as drafts: Olive Oil & Truffle, Apple Cinnamon Syrup, Apricot Syrup,
+     Organic Black Tea, Natracare — check their prices, then publish them)
 
-   All four are safe to run again.
+   All of these are safe to run again.
 2. **Environment**: copy `.env.example` to `.env.local` and fill in the keys from
    Supabase → Project Settings → API keys. On Vercel, add the same variables under
    Settings → Environment Variables. Set `SITE_URL` to the real domain once it's ready
@@ -89,7 +92,7 @@ demo records.
 
 ### Photos
 
-Product photos currently come from the shop's Instagram posts (`public/instagram/`).
+Product photos come from the shop's Instagram posts (`public/photos/` and `public/instagram/`).
 Upload full-size photos from **Admin → Products → Photos**; the first photo is the
 main one. Products without a photo show a colourful illustration you can design in the
 product form.
