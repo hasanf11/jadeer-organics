@@ -24,7 +24,7 @@ import { RECIPES, recipeText } from "@/lib/journal";
 import { pageMetadata } from "@/lib/seo";
 import Aurora from "@/components/motion/aurora";
 import BlurText from "@/components/motion/blur-text";
-import CardSwap from "@/components/motion/card-swap";
+import CardSwap, { Card } from "@/components/motion/card-swap";
 import CountUp from "@/components/motion/count-up";
 import Magnet from "@/components/motion/magnet";
 import Marquee from "@/components/motion/marquee";
@@ -109,20 +109,20 @@ export default async function HomePage() {
             </dl>
           </div>
 
-          <div className="relative mx-auto mt-6 grid h-[360px] w-full max-w-[520px] place-items-center sm:h-[440px] lg:mt-0 lg:h-[560px]">
-            <div className="scale-[0.78] sm:scale-90 lg:scale-100">
-              <CardSwap width={300} height={380} distanceX={40} distanceY={46} delay={4000}>
-                {heroProducts.map((product) => (
-                  <Link key={product!.id} href={href(`/products/${product!.slug}`)} className="relative block h-full w-full" style={{ background: product!.art.background }} tabIndex={-1}>
-                    <ProductVisual image={product!.images[0]?.path} alt={product!.name} art={product!.art} sizes="300px" priority />
+          <div className="relative mx-auto mt-2 h-[400px] w-full max-w-[560px] sm:h-[480px] lg:mt-0 lg:h-[580px]">
+            <CardSwap width={300} height={375} cardDistance={48} verticalDistance={56} depth={90} skewAmount={5} cardRadius={26} theme="light" delay={4200} ariaLabel={t.home.bestsellers}>
+              {heroProducts.map((product, i) => (
+                <Card key={product!.id} style={{ background: product!.art.background }}>
+                  <Link href={href(`/products/${product!.slug}`)} className="relative block h-full w-full" draggable={false}>
+                    <ProductVisual image={product!.images[0]?.path} alt={product!.name} art={product!.art} sizes="300px" priority={i === 0} />
                     <span className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-2 rounded-2xl bg-white/95 px-4 py-3 text-ink shadow-soft">
                       <span className="truncate font-bold">{product!.name}</span>
                       <span className="shrink-0 font-display text-lg text-leaf">{shortMoney(Math.min(...product!.variants.map((v) => v.price)))}</span>
                     </span>
                   </Link>
-                ))}
-              </CardSwap>
-            </div>
+                </Card>
+              ))}
+            </CardSwap>
           </div>
         </div>
       </section>
